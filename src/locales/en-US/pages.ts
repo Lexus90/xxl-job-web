@@ -30,7 +30,22 @@ export default {
   'pages.admin.subPage.title': 'This page can only be viewed by Admin',
   'pages.admin.subPage.alertMessage':
     'Umi ui is now released, welcome to use npm run ui to start the experience.',
+  'pages.searchTable.deletion': 'Del',
+  'pages.searchTable.edit': 'Edit',
+  'pages.searchTable.appId': 'APP_ID',
+
+  'pages.searchTable.appName': 'App Name',
+  'pages.searchTable.owner': 'Owner',
+  'menu.Dashboard': 'Dashboard',
+
+  'menu.App': 'App',
+  'menu.Job': 'Job',
+  'menu.Log': 'Log',
+  'menu.User': 'User',
+
   'pages.searchTable.createForm.newRule': 'New Rule',
+  'pages.searchTable.createForm.newApp': 'New App',
+  'pages.searchTable.createForm.updateApp': 'Update App',
   'pages.searchTable.updateForm.ruleConfig': 'Rule configuration',
   'pages.searchTable.updateForm.basicConfig': 'Basic Information',
   'pages.searchTable.updateForm.ruleName.nameLabel': 'Rule Name',

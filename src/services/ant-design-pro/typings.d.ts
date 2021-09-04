@@ -34,6 +34,31 @@ declare namespace API {
     pageSize?: number;
   };
 
+  type AppPageParams = {
+    appname?: number;
+    title?: number;
+    start?: number;
+    length?: number;
+  };
+
+  type AppInfo = {
+    id?: number;
+    appname?: string;
+    title?: string;
+    owner?: string;
+    addressType?: number;
+    addressList?: string;
+    updateTime?: string;
+    registryList?: string;
+  };
+
+  type AppList = {
+    data?: AppInfo[];
+    /** 列表的内容总数 */
+    recordsTotal?: number;
+    recordsTotal?: number;
+  }
+
   type RuleListItem = {
     key?: number;
     disabled?: boolean;

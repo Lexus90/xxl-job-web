@@ -28,7 +28,22 @@ export default {
   'pages.welcome.alertMessage': '更快更强的重型组件，已经发布。',
   'pages.admin.subPage.title': ' 这个页面只有 admin 权限才能查看',
   'pages.admin.subPage.alertMessage': 'umi ui 现已发布，欢迎使用 npm run ui 启动体验。',
+  'pages.searchTable.deletion': '删除',
+  'pages.searchTable.edit': '编辑',
+
+  'pages.searchTable.appId': 'APP_ID',
+  'pages.searchTable.appName': '应用名称',
+  'pages.searchTable.owner': '负责人',
+  'menu.Dashboard': 'Dashboard',
+
+  'menu.App': '服务管理',
+  'menu.Job': '任务管理',
+  'menu.Log': '调度日志',
+  'menu.User': '用户管理',
+
   'pages.searchTable.createForm.newRule': '新建规则',
+  'pages.searchTable.createForm.newApp': '新建服务',
+  'pages.searchTable.createForm.updateApp': '更新服务',
   'pages.searchTable.updateForm.ruleConfig': '规则配置',
   'pages.searchTable.updateForm.basicConfig': '基本信息',
   'pages.searchTable.updateForm.ruleName.nameLabel': '规则名称',

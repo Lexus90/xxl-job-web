@@ -37,6 +37,28 @@ export async function getNotices(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+//
+// /** 获取APPID列表 GET /api/appList */
+// export async function appList(
+//   params: {
+//     appname?: number;
+//     title?: number;
+//     current?: number;
+//     pageSize?: number;
+//   },
+//   options?: { [key: string]: any },
+// ) {
+//   return request<API.AppList>('/api/jobgroup/pageList', {
+//     method: 'POST',
+//     params: {
+//       appname: params.appname,
+//       title: params.title,
+//       start: params.current,
+//       length: params.pageSize,
+//     },
+//     ...(options || {}),
+//   });
+// }
 
 /** 获取规则列表 GET /api/rule */
 export async function rule(

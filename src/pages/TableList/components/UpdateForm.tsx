@@ -22,6 +22,7 @@ export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmit: (values: FormValueType) => Promise<void>;
   updateModalVisible: boolean;
+  handleUpdateModalVisible: boolean;
   values: Partial<API.RuleListItem>;
 };
 

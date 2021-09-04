@@ -4,18 +4,30 @@ const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
 } = {
-  navTheme: 'light',
+
+  "layout": "top",
+  "contentWidth": "Fluid",
+  "splitMenus": false,
+  "navTheme": "dark",
+  "primaryColor": "#1890ff",
+  "footerRender": false,
+  "menuRender": false,
+
+  // layout: 'mix',
+  // contentWidth: 'Fluid',
+  // navTheme: 'realDark',
   // 拂晓蓝
-  primaryColor: '#1890ff',
-  layout: 'mix',
-  contentWidth: 'Fluid',
-  fixedHeader: false,
-  fixSiderbar: true,
+  // primaryColor: '#1890ff',
+
+  // fixedHeader: false,
+  // fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
+  title: 'XXL-JOB',
   pwa: false,
   logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',
 };
 
 export default Settings;
+
+
