@@ -60,9 +60,14 @@ export async function addApp(
 }
 
 /** 删除APP_ID POST /api/jobgroup/update */
-export async function removeApp(options?: { [key: string]: any }) {
+export async function removeApp(
+  params: {
+    id?: number;
+  },
+  options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/jobgroup/remove', {
     method: 'POST',
+    params: {...params},
     ...(options || {}),
   });
 }

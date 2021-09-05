@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from 'antd';
 import ProForm, {
   ModalForm,
-  ProFormDateRangePicker, ProFormRadio, ProFormSelect, ProFormText,
+  ProFormDateRangePicker, ProFormRadio, ProFormSelect, ProFormText, ProFormTextArea,
 } from '@ant-design/pro-form';
 import { useIntl, FormattedMessage } from 'umi';
 
@@ -40,7 +40,6 @@ const AppUpdateForm: React.FC<UpdateFormProps> = (props) => {
         defaultMessage: '修改服务',
       })}
       width="400px"
-      destroyOnClose
       visible={props.updateModalVisible}
       onVisibleChange={props.handleUpdateModalVisible}
       onFinish={props.onSubmit}
@@ -115,7 +114,7 @@ const AppUpdateForm: React.FC<UpdateFormProps> = (props) => {
           value: 1,
         },
       ]}/>
-      <ProFormText
+      <ProFormTextArea
         name="addressList"
         initialValue={props.values.addressList}
       />

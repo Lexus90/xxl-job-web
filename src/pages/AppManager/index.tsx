@@ -1,4 +1,11 @@
-import { PlusOutlined } from '@ant-design/icons';
+import {
+  DeleteFilled, DeleteTwoTone,
+  EditFilled,
+  EditOutlined,
+  EditTwoTone,
+  PlusOutlined,
+  QuestionCircleOutlined
+} from '@ant-design/icons';
 import {Button, message, Input, Drawer, Popconfirm, Space, Tag} from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
@@ -61,15 +68,15 @@ const handleUpdate = async (fields: FormValueType) => {
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.AppInfo[]) => {
+const handleRemove = async (selectedRow: API.AppInfo) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (!selectedRow) return true;
 
-  selectedRows.map((row) => console.log("selectedRows = " + row.appname ))
+  console.log("selectedRow = " + selectedRow.appname );
 
   try {
     await removeApp({
-      id: selectedRows.map((row) => row.id),
+      id: selectedRow.id,
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -203,7 +210,7 @@ const AppManager: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <Tag color={"blue"}>修改</Tag>
+          <EditTwoTone />
         </a>,
 
         <a
@@ -213,13 +220,15 @@ const AppManager: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <Popconfirm id="pages.searchTable.deletion" title={"确认删除"+record.appname+"?"}
+          <Popconfirm id="pages.searchTable.deletion"
+                      icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                      title= { "确认删除"+record.appname+"?"}
                       onConfirm={
                         async () => {
-                          await handleRemove([record]);
+                          await handleRemove(record);
                           actionRef.current?.reloadAndRest?.();
                         }}>
-            <a ><Tag color={"red"}>删除</Tag></a>
+            <a ><DeleteTwoTone twoToneColor={'red'} /></a>
           </Popconfirm>
         </a>
       ],
