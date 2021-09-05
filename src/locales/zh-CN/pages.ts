@@ -28,6 +28,7 @@ export default {
   'pages.welcome.alertMessage': '更快更强的重型组件，已经发布。',
   'pages.admin.subPage.title': ' 这个页面只有 admin 权限才能查看',
   'pages.admin.subPage.alertMessage': 'umi ui 现已发布，欢迎使用 npm run ui 启动体验。',
+  'pages.searchTable.updateForm.addressList': '注册列表',
   'pages.searchTable.deletion': '删除',
   'pages.searchTable.edit': '编辑',
 
@@ -72,6 +73,7 @@ export default {
   'pages.searchTable.config': '配置',
   'pages.searchTable.subscribeAlert': '订阅警报',
   'pages.searchTable.title': '查询表格',
+  'pages.searchTable.app.title': '服务列表',
   'pages.searchTable.new': '新建',
   'pages.searchTable.chosen': '已选择',
   'pages.searchTable.item': '项',

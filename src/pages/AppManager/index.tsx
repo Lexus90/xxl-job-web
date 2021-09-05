@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
+import {Button, message, Input, Drawer, Popconfirm, Space, Tag} from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -64,9 +64,12 @@ const handleUpdate = async (fields: FormValueType) => {
 const handleRemove = async (selectedRows: API.AppInfo[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
+
+  selectedRows.map((row) => console.log("selectedRows = " + row.appname ))
+
   try {
     await removeApp({
-      key: selectedRows.map((row) => row.key),
+      id: selectedRows.map((row) => row.id),
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -118,18 +121,6 @@ const AppManager: React.FC = () => {
       ),
       dataIndex: 'appname',
       tip: '应用英文名',
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
     },
 
     {
@@ -141,40 +132,34 @@ const AppManager: React.FC = () => {
       ),
       dataIndex: 'title',
       tip: '应用中文名',
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.owner" defaultMessage="负责人" />,
       dataIndex: 'owner',
       valueType: 'textarea',
       hideInSearch:true,
+      render: (dom, entity) => {
+        return (<Tag color={"orange"}>{dom}</Tag>);
+      },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.owner" defaultMessage="注册方式" />,
+      title: <FormattedMessage id="pages.searchTable.addressType" defaultMessage="注册方式" />,
       dataIndex: 'addressType',
       valueType: 'textarea',
       hideInSearch:true,
       render: (dom, entity) => {
         return (
-          entity.addressType == 0 ? "自动注册" : "手动注册"
+        <Space>
+          {entity.addressType == 0 ? <Tag color="blue">自动注册</Tag>  : <Tag color="red">手动注册</Tag>}
+        </Space>
+
         )
       },
     },
     {
       title: (
         <FormattedMessage
-          id="pages.searchTable.updateForm.addressList.nameLabel"
+          id="pages.searchTable.updateForm.addressList"
           defaultMessage="在线节点数量"
         />
       ),
@@ -182,22 +167,24 @@ const AppManager: React.FC = () => {
       dataIndex: 'registryList',
       render: (dom, entity) => {
         return (
-          entity.addressList ?
-            (<a
+            <Space
                 onClick={() => {
                   setCurrentRow(entity);
                   setShowDetail(true);
                 }}
               >
-              {entity.addressList?.split(",").length}
-            </a>)
-            :
-            <span color='red'>0</span>
+              <a>
+                { entity.addressList ?
+                    <Tag color="blue">{entity.addressList?.split(",").length}{"个节点"}</Tag>
+                    : <Tag color="red">{"无节点"}</Tag>
+                }
+              </a>
+            </Space>
         );
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.owner" defaultMessage="节点列表" />,
+      title: <FormattedMessage id="pages.searchTable.addressList" defaultMessage="节点列表" />,
       dataIndex: 'addressList',
       valueType: 'textarea',
       hideInSearch:true,
@@ -216,25 +203,24 @@ const AppManager: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.edit" defaultMessage="编辑" />
+          <Tag color={"blue"}>修改</Tag>
         </a>,
 
         <a
-          key="config"
+          key="del"
           onClick={() => {
             handleDeleteModalVisible(true);
             setCurrentRow(record);
           }}
         >
-          <Button
-            onClick={async () => {
-              await handleRemove([record]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <FormattedMessage id="pages.searchTable.deletion" defaultMessage="删除" />
-          </Button>
-
+          <Popconfirm id="pages.searchTable.deletion" title={"确认删除"+record.appname+"?"}
+                      onConfirm={
+                        async () => {
+                          await handleRemove([record]);
+                          actionRef.current?.reloadAndRest?.();
+                        }}>
+            <a ><Tag color={"red"}>删除</Tag></a>
+          </Popconfirm>
         </a>
       ],
     },
@@ -244,13 +230,16 @@ const AppManager: React.FC = () => {
     <PageContainer>
       <ProTable<API.AppInfo, API.AppPageParams>
         headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
+          id: 'pages.searchTable.app.title',
           defaultMessage: '服务列表',
         })}
+
+        showHeader={false}
+
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
-          labelWidth: 120,
+          filterType: 'query',
         }}
         toolBarRender={() => [
           <Button
@@ -376,7 +365,7 @@ const AppManager: React.FC = () => {
               data: currentRow || {},
             })}
             params={{
-              id: currentRow?.appname,
+              id: currentRow?.id,
             }}
             columns={columns as ProDescriptionsItemProps<API.AppInfo>[]}
           />

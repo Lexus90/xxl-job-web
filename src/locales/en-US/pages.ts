@@ -30,6 +30,7 @@ export default {
   'pages.admin.subPage.title': 'This page can only be viewed by Admin',
   'pages.admin.subPage.alertMessage':
     'Umi ui is now released, welcome to use npm run ui to start the experience.',
+  'pages.searchTable.updateForm.addressList': 'AddrList',
   'pages.searchTable.deletion': 'Del',
   'pages.searchTable.edit': 'Edit',
   'pages.searchTable.appId': 'APP_ID',
@@ -75,6 +76,7 @@ export default {
   'pages.searchTable.config': 'Configuration',
   'pages.searchTable.subscribeAlert': 'Subscribe to alerts',
   'pages.searchTable.title': 'Enquiry Form',
+  'pages.searchTable.app.title': 'APP Table',
   'pages.searchTable.new': 'New',
   'pages.searchTable.chosen': 'chosen',
   'pages.searchTable.item': 'item',
