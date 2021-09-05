@@ -1,6 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from 'umi';
+import {handResult} from "@/services/ant-design-pro/api";
 
 /** 获取APP_ID列表 POST /api/jobgroup/pageList */
 export async function appList(
@@ -35,11 +36,11 @@ export async function updateApp(
   },
   options?: { [key: string]: any }
   ) {
-  return request<API.AppInfo>('/api/jobgroup/update', {
+  return request<API.ReturnT>('/api/jobgroup/update', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
-  });
+  }).then(handResult);
 }
 
 /** 新建APP_ID POST /api/jobgroup/update */
@@ -52,11 +53,11 @@ export async function addApp(
   },
   options?: { [key: string]: any }
   ) {
-  return request<API.AppInfo>('/api/jobgroup/save', {
+  return request<API.ReturnT>('/api/jobgroup/save', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
-  });
+  }).then(handResult);
 }
 
 /** 删除APP_ID POST /api/jobgroup/update */
@@ -65,9 +66,9 @@ export async function removeApp(
     id?: number;
   },
   options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/jobgroup/remove', {
+  return request<API.ReturnT>('/api/jobgroup/remove', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
-  });
+  }).then(handResult);
 }

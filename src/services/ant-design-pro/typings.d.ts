@@ -2,6 +2,61 @@
 /* eslint-disable */
 
 declare namespace API {
+
+  type ReturnT = {
+    code?: number;
+    msg?: string;
+  }
+
+  // App 相关实体类
+  type AppPageParams = {
+    appname?: number;
+    title?: number;
+    start?: number;
+    length?: number;
+  };
+
+  type AppInfo = {
+    id?: number;
+    appname?: string;
+    title?: string;
+    owner?: string;
+    addressType?: number;
+    addressList?: string;
+    updateTime?: string;
+    registryList?: string;
+  };
+
+  type AppList = {
+    data?: AppInfo[];
+    /** 列表的内容总数 */
+    recordsTotal?: number;
+    recordsTotal?: number;
+  }
+
+  // User 相关实体类
+  type UserPageParams = {
+    username?: string;
+    role?: number;
+    start?: number;
+    length?: number;
+  };
+
+  type User = {
+    id?: number;
+    username?: string;
+    password?: string;
+    role?: number;
+    permission?: number;
+  }
+
+  type UserList = {
+    data?: User[];
+    /** 列表的内容总数 */
+    recordsTotal?: number;
+    recordsTotal?: number;
+  }
+
   type CurrentUser = {
     name?: string;
     avatar?: string;
@@ -33,31 +88,6 @@ declare namespace API {
     current?: number;
     pageSize?: number;
   };
-
-  type AppPageParams = {
-    appname?: number;
-    title?: number;
-    start?: number;
-    length?: number;
-  };
-
-  type AppInfo = {
-    id?: number;
-    appname?: string;
-    title?: string;
-    owner?: string;
-    addressType?: number;
-    addressList?: string;
-    updateTime?: string;
-    registryList?: string;
-  };
-
-  type AppList = {
-    data?: AppInfo[];
-    /** 列表的内容总数 */
-    recordsTotal?: number;
-    recordsTotal?: number;
-  }
 
   type RuleListItem = {
     key?: number;

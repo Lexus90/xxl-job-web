@@ -58,7 +58,7 @@
     name: 'User',
     icon: 'TeamOutlined',
     path: '/role',
-    component: './TableList',
+    component: './User',
   },
   {
     path: '/',
