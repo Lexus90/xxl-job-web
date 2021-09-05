@@ -22,6 +22,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/AppUpdateForm';
 import AppUpdateForm from './components/AppUpdateForm';
 import {appList, updateApp, addApp, removeApp} from '@/services/ant-design-pro/appApi';
+import { useAccess, Access } from 'umi';
 /**
  * 添加节点
  *
@@ -104,6 +105,7 @@ const AppManager: React.FC = () => {
 
   /** 国际化配置 */
   const intl = useIntl();
+  const access = useAccess();
 
   const columns: ProColumns<API.AppInfo>[] = [
     {
@@ -210,7 +212,7 @@ const AppManager: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <EditTwoTone />
+          <Access accessible={access.isAdmin}><EditTwoTone /></Access>
         </a>,
 
         <a
@@ -228,7 +230,10 @@ const AppManager: React.FC = () => {
                           await handleRemove(record);
                           actionRef.current?.reloadAndRest?.();
                         }}>
-            <a ><DeleteTwoTone twoToneColor={'red'} /></a>
+            <Access accessible={access.isAdmin}>
+              <a ><DeleteTwoTone twoToneColor={'red'} /></a>
+            </Access>
+
           </Popconfirm>
         </a>
       ],

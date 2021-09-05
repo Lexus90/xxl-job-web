@@ -58,6 +58,7 @@
     name: 'User',
     icon: 'TeamOutlined',
     path: '/role',
+    access: 'canAdmin',
     component: './User',
   },
   {
