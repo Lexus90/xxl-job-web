@@ -22,7 +22,7 @@ export type UpdateFormProps = {
   values: Partial<API.AppInfo>;
 };
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+const AppUpdateForm: React.FC<UpdateFormProps> = (props) => {
   const intl = useIntl();
   return (
     <ModalForm<{
@@ -123,4 +123,4 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateForm;
+export default AppUpdateForm;

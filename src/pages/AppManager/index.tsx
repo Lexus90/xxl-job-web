@@ -12,8 +12,8 @@ import {
 } from '@ant-design/pro-form';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import type { FormValueType } from './components/UpdateForm';
-import UpdateForm from './components/UpdateForm';
+import type { FormValueType } from './components/AppUpdateForm';
+import AppUpdateForm from './components/AppUpdateForm';
 import {appList, updateApp, addApp, removeApp} from '@/services/ant-design-pro/appApi';
 /**
  * 添加节点
@@ -327,7 +327,7 @@ const AppManager: React.FC = () => {
         ]}/>
       </ModalForm>
 
-      <UpdateForm
+      <AppUpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
