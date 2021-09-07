@@ -3,10 +3,10 @@ import {
   EditFilled,
   EditOutlined,
   EditTwoTone,
-  PlusOutlined,
+  PlusOutlined, PoweroffOutlined,
   QuestionCircleOutlined
 } from '@ant-design/icons';
-import {Button, message, Input, Drawer, Popconfirm, Space, Tag, Select} from 'antd';
+import {Button, message, Input, Drawer, Popconfirm, Space, Tag, Select, Tooltip} from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -23,6 +23,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UserUpdateForm';
 import UserUpdateForm from './components/UserUpdateForm';
 import {userList, updateUser, addUser, removeUser} from '@/services/ant-design-pro/userApi';
+import {Access, useAccess} from "@@/plugin-access/access";
 /**
  * 添加节点
  *
@@ -103,6 +104,7 @@ const UserManager: React.FC = () => {
 
   /** 国际化配置 */
   const intl = useIntl();
+  const access = useAccess();
 
   const columns: ProColumns<API.User>[] = [
     {
@@ -206,6 +208,7 @@ const UserManager: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       hideInDescriptions: true,
+      hideInTable: !access.accessAble,
       render: (_, record) => [
         <a
           key="config"
@@ -214,8 +217,9 @@ const UserManager: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <EditTwoTone />
-        </a>,
+          <Tooltip placement="left" title={"编辑用户"}><EditTwoTone /></Tooltip>
+        </a>
+        ,
 
         <a
           key="del"
@@ -232,7 +236,7 @@ const UserManager: React.FC = () => {
                           await handleRemove(record);
                           actionRef.current?.reloadAndRest?.();
                         }}>
-            <a ><DeleteTwoTone twoToneColor={'red'} /></a>
+            <Tooltip placement="left" title={"删除用户"}><DeleteTwoTone twoToneColor={'red'} /></Tooltip>
           </Popconfirm>
         </a>
       ],

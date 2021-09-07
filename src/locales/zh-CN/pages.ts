@@ -74,6 +74,7 @@ export default {
   'pages.searchTable.subscribeAlert': '订阅警报',
   'pages.searchTable.title': '查询表格',
   'pages.searchTable.app.title': '服务列表',
+  'pages.searchTable.log.title': '日志列表',
   'pages.searchTable.new': '新建',
   'pages.searchTable.chosen': '已选择',
   'pages.searchTable.item': '项',

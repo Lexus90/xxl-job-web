@@ -77,6 +77,7 @@ export default {
   'pages.searchTable.subscribeAlert': 'Subscribe to alerts',
   'pages.searchTable.title': 'Enquiry Form',
   'pages.searchTable.app.title': 'APP Table',
+  'pages.searchTable.log.title': 'Log Table',
   'pages.searchTable.new': 'New',
   'pages.searchTable.chosen': 'chosen',
   'pages.searchTable.item': 'item',

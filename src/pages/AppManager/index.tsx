@@ -6,7 +6,7 @@ import {
   PlusOutlined,
   QuestionCircleOutlined
 } from '@ant-design/icons';
-import {Button, message, Input, Drawer, Popconfirm, Space, Tag} from 'antd';
+import {Button, message, Input, Drawer, Popconfirm, Space, Tag, Tooltip} from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -176,16 +176,14 @@ const AppManager: React.FC = () => {
       dataIndex: 'registryList',
       render: (dom, entity) => {
         return (
-            <Space
-                onClick={() => {
-                  setCurrentRow(entity);
-                  setShowDetail(true);
-                }}
-              >
+            <Space>
               <a>
                 { entity.addressList ?
+                  <Tooltip placement="top"
+                           title={<div dangerouslySetInnerHTML={{__html:entity.addressList.replaceAll(",","<br/>")}}></div>}>
                     <Tag color="blue">{entity.addressList?.split(",").length}{"个节点"}</Tag>
-                    : <Tag color="red">{"无节点"}</Tag>
+                  </Tooltip>
+                  : <Tag color="red">{"无节点"}</Tag>
                 }
               </a>
             </Space>
@@ -204,6 +202,7 @@ const AppManager: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       hideInDescriptions: true,
+      hideInTable: !access.accessAble,
       render: (_, record) => [
         <a
           key="config"
@@ -212,7 +211,7 @@ const AppManager: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <Access accessible={access.isAdmin}><EditTwoTone /></Access>
+          <Tooltip placement="left" title={"编辑服务"}><EditTwoTone /></Tooltip>
         </a>,
 
         <a
@@ -230,10 +229,7 @@ const AppManager: React.FC = () => {
                           await handleRemove(record);
                           actionRef.current?.reloadAndRest?.();
                         }}>
-            <Access accessible={access.isAdmin}>
-              <a ><DeleteTwoTone twoToneColor={'red'} /></a>
-            </Access>
-
+            <Tooltip placement="left" title={"删除服务"}><DeleteTwoTone twoToneColor={'red'} /></Tooltip>
           </Popconfirm>
         </a>
       ],
