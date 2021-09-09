@@ -34,6 +34,11 @@ npm start
 npm run build
 ```
 
+``` package
+mvn package
+
+```
+
 ### Check code style
 
 ```bash
@@ -52,10 +57,7 @@ npm run lint:fix
 npm test
 ```
 
-``` package
-mvn package
 
-```
 
 ## More
 
