@@ -5,7 +5,7 @@
 # roadhog-api-doc ignore
 /src/utils/request-temp.js
 _roadhog-api-doc
-
+/src/resources/static
 # production
 /dist
 /.vscode
@@ -14,14 +14,14 @@ _roadhog-api-doc
 .DS_Store
 npm-debug.log*
 yarn-error.log
-
+/ui/tests
 /coverage
 .idea
 yarn.lock
 package-lock.json
 *bak
 .vscode
-
+/target
 # visual studio code
 .history
 *.log
