@@ -84,4 +84,9 @@ export default {
   'pages.searchTable.tenThousand': '0000',
   'pages.searchTable.batchDeletion': 'bacth deletion',
   'pages.searchTable.batchApproval': 'batch approval',
+
+  'pages.jobManager.job.title': 'Job List',
+  'pages.jobManager.job.id': 'Job ID',
+  'pages.jobManager.jobDesc': 'JobDesc',
+
 };

@@ -81,4 +81,14 @@ export default {
   'pages.searchTable.tenThousand': '万',
   'pages.searchTable.batchDeletion': '批量删除',
   'pages.searchTable.batchApproval': '批量审批',
+
+  'pages.jobManager.job.title': '任务列表',
+  'pages.jobManager.job.id': '任务ID',
+  'pages.jobManager.jobDesc': '任务描述',
+  'pages.jobManager.glueType': '运行模式',
+  'pages.jobManager.scheduleConf': "调度类型",
+  'pages.jobManager.triggerStatus': "状态",
+  'pages.jobManager.author': "负责人",
+  
+
 };
