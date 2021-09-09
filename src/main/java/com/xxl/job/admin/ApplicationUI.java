@@ -1,2 +1,4 @@
-package com.xxl.job.admin;public class ApplicationUI {
+package com.xxl.job.admin;
+
+public class ApplicationUI {
 }
