@@ -1,7 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from 'umi';
-import {handResult} from "@/services/ant-design-pro/api";
+import {handleResult} from "@/services/ant-design-pro/api";
 
 const roleEnum =  {
   all: -1,
@@ -45,7 +45,7 @@ export async function updateUser(
     method: 'POST',
     params: {...params},
     ...(options || {}),
-  }).then(handResult);
+  }).then(handleResult);
 }
 
 /** 新建APP_ID POST /api/user/update */
@@ -76,5 +76,5 @@ export async function removeUser(
     method: 'POST',
     params: {...params},
     ...(options || {}),
-  }).then(handResult);
+  }).then(handleResult);
 }

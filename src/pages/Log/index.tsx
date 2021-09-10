@@ -6,24 +6,15 @@ import {
   PlusOutlined, PoweroffOutlined,
   QuestionCircleOutlined
 } from '@ant-design/icons';
-import {Button, message, Input, Drawer, Popconfirm, Space, Tag, Tooltip} from 'antd';
+import {Button, message, Input, Drawer, Popconfirm, Space, Tag, Tooltip, Select} from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import {
-  ModalForm,
-  ProFormRadio,
-  ProFormText,
-} from '@ant-design/pro-form';
-import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/LogUpdateForm';
-import LogUpdateForm from './components/LogUpdateForm';
-import {logList, updateLog, addLog, removeLog, stopJob} from '@/services/ant-design-pro/logApi';
+import {logList, updateLog, addLog, removeLog, stopJob, logBaseInfo} from '@/services/ant-design-pro/logApi';
 import { useAccess, Access } from 'umi';
-import {addUser} from "@/services/ant-design-pro/userApi";
 
 const handleStopJob = async (fields: FormValueType) => {
   const hide = message.loading('正在终止');
@@ -62,6 +53,14 @@ const LogManager: React.FC = () => {
     500 : ["失败", "red"],
   }
 
+  const openList = [];
+
+  access.accessApps?.forEach(function (e){
+    openList.push({label: e.appname, value: e.appname, id:e.id})
+
+  })
+  console.log("openList = " + access.accessApps?.length);
+
   const columns: ProColumns<API.Log>[] = [
     {
       title: (<FormattedMessage id="pages.searchTable.id" defaultMessage="ID"/>),
@@ -77,16 +76,25 @@ const LogManager: React.FC = () => {
       hideInDescriptions:true,
       hideInSearch:true,
     },
+    {
+      title: (<FormattedMessage id="pages.searchTable.jobId"/>),
+      dataIndex: 'jobId',
+      hideInTable:true,
+      hideInDescriptions:true,
+      hideInSearch:true,
+    },
 
     {
       title: (<FormattedMessage id="pages.searchTable.appId" defaultMessage="APP_ID"/>),
       dataIndex: 'jobAppId',
       hideInDescriptions: true,
+      hideInSearch:true
     },
     {
       title: <FormattedMessage id="pages.searchTable.executorHandler" defaultMessage="JobHandler" />,
       dataIndex: 'executorHandler',
       valueType: 'textarea',
+      hideInSearch:true,
       hideInDescriptions: true,
     },
     {
@@ -150,6 +158,7 @@ const LogManager: React.FC = () => {
       title: (<FormattedMessage id="pages.searchTable.handleTime" defaultMessage="执行时间"/>),
       dataIndex: 'handleTime',
       valueType: 'dateTime',
+      hideInSearch:true,
       hideInDescriptions: true,
     },
 
@@ -173,6 +182,7 @@ const LogManager: React.FC = () => {
         />
       ),
       dataIndex: 'handleMsg',
+      hideInSearch:true,
       render: (dom, entity) => {
         return (
           entity.handleMsg ? "" :
@@ -255,10 +265,25 @@ const LogManager: React.FC = () => {
         actionRef={actionRef}
         rowKey="id"
         search={{
-          filterType: 'query',
+          filterType: 'light',
+          show: true,
+          span: 20,
+          // collapseRender: true,
+          labelWidth: 80,
+          layout: 'horizontal',
         }}
+        toolBarRender={
+          () => [<Select placeholder={"请输入APP_ID"} style={{ width: '150px' }}  showSearch options={openList} onChange={(v, option)=>{console.log(option.id)}} />]
+        }
         request={logList}
         columns={columns}
+
+        // options: {{
+        //   show: true,
+        //   density: true,
+        //   fullScreen: true,
+        //   setting: true,
+        // }}
       />
 
       {/*详情页*/}

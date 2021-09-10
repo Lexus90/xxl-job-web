@@ -103,6 +103,18 @@ declare namespace API {
     alarmStatus?: number;
   }
 
+  type LogBaseInfo = {
+    content?: {
+      JobGroupList?: AppInfo[],
+      logStatus: number,
+      jobInfo: {},
+    };
+
+    /** 列表的内容总数 */
+    code?: number;
+    msg?: string;
+  }
+
 
   type CurrentUser = {
     name?: string;
