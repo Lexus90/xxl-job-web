@@ -15,7 +15,7 @@ import ProTable from '@ant-design/pro-table';
 import type { FormValueType } from './components/LogUpdateForm';
 import {logList, updateLog, addLog, removeLog, stopJob, logBaseInfo} from '@/services/ant-design-pro/logApi';
 import { useAccess, Access } from 'umi';
-import AdvancedSearch from "@/pages/custom/AdvancedSearch";
+import AdvancedSearch from "@/pages/Log/components/AdvancedSearch";
 
 const handleStopJob = async (fields: FormValueType) => {
   const hide = message.loading('正在终止');

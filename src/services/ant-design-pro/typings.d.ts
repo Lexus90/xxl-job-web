@@ -115,6 +115,12 @@ declare namespace API {
     msg?: string;
   }
 
+  type Job = {
+    id?: number;
+    executorHandler? :string;
+    jobDesc? :string;
+  }
+
 
   type CurrentUser = {
     name?: string;
