@@ -9,6 +9,7 @@ import ProForm, {
   ProFormSelect
 } from '@ant-design/pro-form';
 import {useAccess, Access} from 'umi';
+import {getJobsByGroup, jobInfoList} from "@/services/ant-design-pro/jobApi";
 
 // const [jobs, setJobs] = useState<any>();
 
@@ -20,73 +21,64 @@ type AdvancedSearchProps = {
 
 const AdvancedSearch: React.FC<AdvancedSearchProps> = (props) => {
   const [jobs, setJobs] = useState<{ value: number, label: string }[]>([]);
+  const [curAppId, setCurAppId] = useState<number>(0);
+  const [curJobId, setCurJobId] = useState<number>(0);
   const access = useAccess();
+
+
   const openList = [];
-  let xxlJobId = 0;
   access.accessApps?.forEach(function (e) {
     openList.push({label: e.appname + "[" + e.title + "]", value: e.id})
-    if ("ci-xxl-job-svc".endsWith(e.appname)) {
-      xxlJobId = e.id;
-    }
   })
 
-  function getJobGroup() {
-    // return access.accessApps[0].id;
-    return xxlJobId;
-  }
-
-  const handleAppChange = id => {
-    let jo1 = [];
-    console.log("value = " + id);
-    if (id == 1) {
-      jo1 = [
-        {value: 1, label: "xxx1"},
-        {value: 2, label: "xxx2"},
-        {value: 3, label: "xxx3"},
-      ];
-    } else {
-      jo1 = [
-        {value: 4, label: "xxx4"},
-        {value: 5, label: "xxx5"},
-        {value: 6, label: "xxx6"},
-      ];
-    }
-    console.log("jo1=" + jo1);
-    setJobs(jo1);
-  };
-
   const initVal = {
-    logStatus: 1,
-    jobGroup: getJobGroup(),
+    logStatus: 0,
+    jobGroup: access.accessApps[0]?.id,
+    jobId: curJobId,
   };
 
+  const initJobs = jobGroupId => {
+    setCurAppId(jobGroupId)
+    const jobOptions = [];
+    getJobsByGroup({jobGroup: jobGroupId})
+      .then(ret => {
+        ret.content?.forEach(job => {
+          jobOptions.push({value: job.id, label: job.jobDesc + "[" + job.executorHandler + "]"})
+        })
+        setJobs(jobOptions);
+        setCurJobId(jobOptions[0]?.value)
+      })
+  };
 
   return (
     <QueryFilter<{
       jobGroup: number;
-      jobId: string;
+      jobId: number;
       logStatus: number;
     }>
       defaultCollapsed={false}
       initialValues={initVal}
-
       onInit={(values) => {
+        initJobs(initVal.jobGroup);
         props.initParam?.(initVal);
       }}
 
       onFinish={async (values) => {
         props.onSearch?.(values);
-        console.log("onFinish=" + values.logStatus);
       }}
     >
 
       <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup" label="服务" showSearch
                      options={openList}
                      fieldProps={{
-                       onChange: (e) => handleAppChange(e),
+                       onChange: (e) => initJobs(e),
                      }}/>
 
-      <ProFormSelect name="jobId" label="任务" width="sm" showSearch options={jobs}/>
+      <ProFormSelect name="jobId" label="任务" width="sm" showSearch options={jobs}
+                     fieldProps={{
+                       value: curJobId
+                     }}
+      />
 
       <ProFormSelect name="logStatus" label="状态" width="sm"
                      options={[

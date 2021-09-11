@@ -18,10 +18,22 @@ export async function jobInfoList(
     return request<API.JobList>('/api/jobinfo/pageList', {
       method: 'POST',
       params: {
-        jobGroup: 302,
-        triggerStatus: -1,
-        start: 0,
-        length: 10,
+        ...params
+      },
+      ...(options || {}),
+    });
+  }
+
+  export function getJobsByGroup(
+    params: {
+        jobGroup?: number;
+    },
+    options?: { [key: string]: any },
+  ) {
+    return request<API.JobList>('/api/joblog/getJobsByGroup', {
+      method: 'POST',
+      params: {
+        ...params
       },
       ...(options || {}),
     });
@@ -44,7 +56,7 @@ export async function jobInfoList(
       ...(options || {}),
     }).then(handResult);
   }
-  
+
   /** 新建APP_ID POST /api/jobgroup/update */
   export async function addJobInfo(
     params: {
@@ -61,7 +73,7 @@ export async function jobInfoList(
       ...(options || {}),
     }).then(handResult);
   }
-  
+
   /** 删除APP_ID POST /api/jobgroup/update */
   export async function removeJobInfo(
     params: {
@@ -74,4 +86,3 @@ export async function jobInfoList(
       ...(options || {}),
     }).then(handResult);
   }
-  

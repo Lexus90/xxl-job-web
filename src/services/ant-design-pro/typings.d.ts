@@ -226,7 +226,7 @@ declare namespace API {
       start?: number;
       length?: number;
     };
-  
+
     type JobInfo = {
       id: number;
       jobGroup: number;
@@ -254,12 +254,12 @@ declare namespace API {
       triggerLastTime: number;
       triggerNextTime: number;
     };
-  
+
     type JobList = {
-      data?: JobInfo[];
+      content?: JobInfo[];
       /** 列表的内容总数 */
       recordsTotal?: number;
       recordsTotal?: number;
     }
-  
+
 }
