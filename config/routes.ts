@@ -46,7 +46,7 @@
     name: 'Log',
     icon: 'ProfileFilled',
     path: '/log',
-    component: './TableList',
+    component: './Log',
   },
   {
     name: 'App',

@@ -1,9 +1,18 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from 'umi';
-import {handResult} from "@/services/ant-design-pro/api";
+import {handleResult} from "@/services/ant-design-pro/api";
 
 /** 获取APP_ID列表 POST /api/jobgroup/pageList */
+export async function listAccessApps(
+  options?: { [key: string]: any },
+) {
+  return request<API.AppList>('/api/jobgroup/accessApps', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
 export async function appList(
   params: {
     appname?: number;
@@ -40,7 +49,7 @@ export async function updateApp(
     method: 'POST',
     params: {...params},
     ...(options || {}),
-  }).then(handResult);
+  }).then(handleResult);
 }
 
 /** 新建APP_ID POST /api/jobgroup/update */
@@ -57,7 +66,7 @@ export async function addApp(
     method: 'POST',
     params: {...params},
     ...(options || {}),
-  }).then(handResult);
+  }).then(handleResult);
 }
 
 /** 删除APP_ID POST /api/jobgroup/update */
@@ -70,5 +79,5 @@ export async function removeApp(
     method: 'POST',
     params: {...params},
     ...(options || {}),
-  }).then(handResult);
+  }).then(handleResult);
 }

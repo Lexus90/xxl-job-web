@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from 'umi';
 
-export const handResult =(result : API.ReturnT) => {
+export const handleResult =(result : API.ReturnT) => {
   if (result.code == 200) {
     // message.success('删除成功，即将刷新');
   }else {

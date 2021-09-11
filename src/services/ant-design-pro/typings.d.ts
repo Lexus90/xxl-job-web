@@ -8,7 +8,7 @@ declare namespace API {
     msg?: string;
   }
 
-  // App 相关实体类
+  // ========== App 相关实体类 ==========
   type AppPageParams = {
     appname?: number;
     title?: number;
@@ -30,11 +30,11 @@ declare namespace API {
   type AppList = {
     data?: AppInfo[];
     /** 列表的内容总数 */
-    recordsTotal?: number;
-    recordsTotal?: number;
+    total?: number;
+    success?: boolean;
   }
 
-  // User 相关实体类
+  // ========== User 相关实体类 ==========
   type UserPageParams = {
     username?: string;
     role?: number;
@@ -53,9 +53,74 @@ declare namespace API {
   type UserList = {
     data?: User[];
     /** 列表的内容总数 */
-    recordsTotal?: number;
-    recordsTotal?: number;
+    total?: number;
+    success?: boolean;
   }
+
+  // ========== Log 相关实体类 ==========
+  type LogPageParams = {
+    jobGroup?: number;
+    jobId?: number;
+    logStatus?: number;
+    filterTime?: string;
+    start?: number;
+    length?: number;
+  };
+  type LogList = {
+    data?: Log[];
+
+    /** 列表的内容总数 */
+    total?: number;
+    success?: boolean;
+  }
+
+  type Log = {
+    id?: number;
+    // job info
+    jobGroup? :number;
+    jobAppId? :number;
+    jobId? :number;
+    glueType? :string;
+
+    // execute info
+    executorAddress? :string;
+    executorHandler? :string;
+    executorParam? :string;
+    executorShardingParam? :string;
+    executorFailRetryCount? :number;
+
+    // trigger info
+    triggerTime?: string;
+    triggerCode?: number;
+    triggerMsg?: string;
+
+    // handle info
+    handleTime?: string;
+    handleCode?: number;
+    handleMsg?: string;
+
+    // alarm info
+    alarmStatus?: number;
+  }
+
+  type LogBaseInfo = {
+    content?: {
+      JobGroupList?: AppInfo[],
+      logStatus: number,
+      jobInfo: {},
+    };
+
+    /** 列表的内容总数 */
+    code?: number;
+    msg?: string;
+  }
+
+  type Job = {
+    id?: number;
+    executorHandler? :string;
+    jobDesc? :string;
+  }
+
 
   type CurrentUser = {
     name?: string;
