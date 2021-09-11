@@ -19,11 +19,11 @@ export async function logList(
     method: 'POST',
     params: {
       jobGroup: !params.jobGroup ? 0 : params.jobGroup,
-      jobId: !params.jobId ? 0 : params.jobId,
+      jobId: !params.jobId ? -1 : params.jobId,
       logStatus: !params.logStatus ? -1 :params.logStatus,
       filterTime: params.filterTime,
-      start: params.current-1,
-      length: params.pageSize,
+      start: 0,
+      length: params.pageSize ? 10:params.pageSize,
     },
     ...(options || {}),
   });

@@ -15,6 +15,7 @@ import ProTable from '@ant-design/pro-table';
 import type { FormValueType } from './components/LogUpdateForm';
 import {logList, updateLog, addLog, removeLog, stopJob, logBaseInfo} from '@/services/ant-design-pro/logApi';
 import { useAccess, Access } from 'umi';
+import AdvancedSearch from "@/pages/custom/AdvancedSearch";
 
 const handleStopJob = async (fields: FormValueType) => {
   const hide = message.loading('正在终止');
@@ -42,6 +43,8 @@ const LogManager: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.Log>();
+  const [param, setParam] = useState<API.LogPageParams>();
+  const [data, setData] = useState<API.Log[]>([]);
   const [selectedRowsState, setSelectedRows] = useState<API.Log[]>([]);
 
   /** 国际化配置 */
@@ -53,13 +56,7 @@ const LogManager: React.FC = () => {
     500 : ["失败", "red"],
   }
 
-  const openList = [];
 
-  access.accessApps?.forEach(function (e){
-    openList.push({label: e.appname, value: e.appname, id:e.id})
-
-  })
-  console.log("openList = " + access.accessApps?.length);
 
   const columns: ProColumns<API.Log>[] = [
     {
@@ -256,34 +253,27 @@ const LogManager: React.FC = () => {
 
   return (
     <PageContainer>
+      <AdvancedSearch onSearch={(allValues)=>{
+                                setParam(allValues);
+                                actionRef.current?.reload();
+                              }}
+                      initParam={(allValues)=>{
+                                  setParam(allValues);
+                                }} />
       <ProTable<API.Log, API.LogPageParams>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.log.title',
           defaultMessage: '日志列表',
         })}
-        // showHeader={false}
+        search={false}
+        showHeader={false}
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          filterType: 'light',
-          show: true,
-          span: 20,
-          // collapseRender: true,
-          labelWidth: 80,
-          layout: 'horizontal',
+        request={(params, sorter, filter) => {
+          // 表单搜索项会从 params 传入，传递给后端接口。
+          return logList({...param,...params});
         }}
-        toolBarRender={
-          () => [<Select placeholder={"请输入APP_ID"} style={{ width: '150px' }}  showSearch options={openList} onChange={(v, option)=>{console.log(option.id)}} />]
-        }
-        request={logList}
         columns={columns}
-
-        // options: {{
-        //   show: true,
-        //   density: true,
-        //   fullScreen: true,
-        //   setting: true,
-        // }}
       />
 
       {/*详情页*/}
@@ -305,18 +295,6 @@ const LogManager: React.FC = () => {
             </text>
           )
         }
-
-        {/*<text style={{whiteSpace:"pre-wrap"}} dangerouslySetInnerHTML={{__html:*/}
-        {/*  "java.lang.reflect.InvocationTargetException\n\tat sun.reflect.GeneratedMethodAccessor749.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY(MethodJobHandler.java:31)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY$accessor$q6pau3K2(MethodJobHandler.java)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler$auxiliary$8drveUTJ.call(Unknown Source)\n\tat org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstMethodsInter.intercept(InstMethodsInter.java:88)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute(MethodJobHandler.java)\n\tat com.xxl.job.core.thread.JobThread.run(JobThread.java:161)\nCaused by: java.lang.NullPointerException\n" +*/}
-        {/*  "java.lang.reflect.InvocationTargetException\n\tat sun.reflect.GeneratedMethodAccessor749.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY(MethodJobHandler.java:31)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY$accessor$q6pau3K2(MethodJobHandler.java)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler$auxiliary$8drveUTJ.call(Unknown Source)\n\tat org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstMethodsInter.intercept(InstMethodsInter.java:88)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute(MethodJobHandler.java)\n\tat com.xxl.job.core.thread.JobThread.run(JobThread.java:161)\nCaused by: java.lang.NullPointerException\n" +*/}
-        {/*  "java.lang.reflect.InvocationTargetException\n\tat sun.reflect.GeneratedMethodAccessor749.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY(MethodJobHandler.java:31)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY$accessor$q6pau3K2(MethodJobHandler.java)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler$auxiliary$8drveUTJ.call(Unknown Source)\n\tat org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstMethodsInter.intercept(InstMethodsInter.java:88)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute(MethodJobHandler.java)\n\tat com.xxl.job.core.thread.JobThread.run(JobThread.java:161)\nCaused by: java.lang.NullPointerException\n" +*/}
-        {/*  "java.lang.reflect.InvocationTargetException\n\tat sun.reflect.GeneratedMethodAccessor749.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY(MethodJobHandler.java:31)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY$accessor$q6pau3K2(MethodJobHandler.java)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler$auxiliary$8drveUTJ.call(Unknown Source)\n\tat org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstMethodsInter.intercept(InstMethodsInter.java:88)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute(MethodJobHandler.java)\n\tat com.xxl.job.core.thread.JobThread.run(JobThread.java:161)\nCaused by: java.lang.NullPointerException\n" +*/}
-        {/*  "java.lang.reflect.InvocationTargetException\n\tat sun.reflect.GeneratedMethodAccessor749.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY(MethodJobHandler.java:31)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY$accessor$q6pau3K2(MethodJobHandler.java)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler$auxiliary$8drveUTJ.call(Unknown Source)\n\tat org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstMethodsInter.intercept(InstMethodsInter.java:88)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute(MethodJobHandler.java)\n\tat com.xxl.job.core.thread.JobThread.run(JobThread.java:161)\nCaused by: java.lang.NullPointerException\n" +*/}
-        {/*  "java.lang.reflect.InvocationTargetException\n\tat sun.reflect.GeneratedMethodAccessor749.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY(MethodJobHandler.java:31)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY$accessor$q6pau3K2(MethodJobHandler.java)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler$auxiliary$8drveUTJ.call(Unknown Source)\n\tat org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstMethodsInter.intercept(InstMethodsInter.java:88)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute(MethodJobHandler.java)\n\tat com.xxl.job.core.thread.JobThread.run(JobThread.java:161)\nCaused by: java.lang.NullPointerException\n" +*/}
-        {/*  "java.lang.reflect.InvocationTargetException\n\tat sun.reflect.GeneratedMethodAccessor749.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY(MethodJobHandler.java:31)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY$accessor$q6pau3K2(MethodJobHandler.java)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler$auxiliary$8drveUTJ.call(Unknown Source)\n\tat org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstMethodsInter.intercept(InstMethodsInter.java:88)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute(MethodJobHandler.java)\n\tat com.xxl.job.core.thread.JobThread.run(JobThread.java:161)\nCaused by: java.lang.NullPointerException\n" +*/}
-        {/*  "java.lang.reflect.InvocationTargetException\n\tat sun.reflect.GeneratedMethodAccessor749.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY(MethodJobHandler.java:31)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute$original$IxSIU4bY$accessor$q6pau3K2(MethodJobHandler.java)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler$auxiliary$8drveUTJ.call(Unknown Source)\n\tat org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstMethodsInter.intercept(InstMethodsInter.java:88)\n\tat com.xxl.job.core.handler.impl.MethodJobHandler.execute(MethodJobHandler.java)\n\tat com.xxl.job.core.thread.JobThread.run(JobThread.java:161)\nCaused by: java.lang.NullPointerException\n"*/}
-        {/*  .replaceAll("Caused by", "<b style='color: red'>Caused by</b>")*/}
-        {/*}}></text>*/}
 
       </Drawer>
     </PageContainer>
