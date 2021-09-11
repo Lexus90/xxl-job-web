@@ -26,7 +26,7 @@ import {jobInfoList, updateJobInfo, addJobInfo, removeJobInfo} from '@/services/
 import { useAccess, Access } from 'umi';
 import JobCreateForm from './components/JobCreateForm';
 import JobSearch from "@/pages/JobManager/components/JobSearch";
-import AdvancedSearch from "@/pages/Log/components/AdvancedSearch";
+import LogSearch from "@/pages/Log/components/LogSearch";
 import {logList} from "@/services/ant-design-pro/logApi";
 
 /**
