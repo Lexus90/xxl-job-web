@@ -64,6 +64,8 @@ export default {
   'pages.searchTable.titleCallNo': '服务调用次数',
   'pages.searchTable.titleStatus': '状态',
   'pages.searchTable.nameStatus.default': '关闭',
+  'pages.searchTable.nameStatus.all': '全部',
+  'pages.searchTable.nameStatus.stop': '停止',
   'pages.searchTable.nameStatus.running': '运行中',
   'pages.searchTable.nameStatus.online': '已上线',
   'pages.searchTable.nameStatus.abnormal': '异常',

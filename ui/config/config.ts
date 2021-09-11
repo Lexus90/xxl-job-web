@@ -9,7 +9,9 @@ import routes from './routes';
 const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
+  history: { type: 'hash' },
   hash: true,
+  publicPath: '/',
   antd: {},
   dva: {
     hmr: true,

@@ -40,7 +40,7 @@
     name: 'Job',
     icon: 'DatabaseFilled',
     path: '/job',
-    component: './TableList',
+    component: './JobManager',
   },
   {
     name: 'Log',
