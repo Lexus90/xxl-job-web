@@ -25,6 +25,9 @@ import AppUpdateForm from './components/AppUpdateForm';
 import {jobInfoList, updateJobInfo, addJobInfo, removeJobInfo} from '@/services/ant-design-pro/jobApi';
 import { useAccess, Access } from 'umi';
 import JobCreateForm from './components/JobCreateForm';
+import JobSearch from "@/pages/JobManager/components/JobSearch";
+import AdvancedSearch from "@/pages/Log/components/AdvancedSearch";
+import {logList} from "@/services/ant-design-pro/logApi";
 
 /**
  * 添加节点
@@ -99,7 +102,7 @@ const AppManager: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
-
+  const [param, setParam] = useState<API.JobPageParams>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
@@ -141,7 +144,7 @@ const AppManager: React.FC = () => {
       tip: '调度类型',
       hideInSearch:true,
       render: (dom, entity) => {
-        return  entity.scheduleType + ": " + entity.scheduleConf 
+        return  entity.scheduleType + ": " + entity.scheduleConf
       }
     },
     {
@@ -150,7 +153,7 @@ const AppManager: React.FC = () => {
       tip: '运行模式',
       hideInSearch:true,
       render: (dom, entity) => {
-        return  entity.glueType + ": " + entity.executorHandler 
+        return  entity.glueType + ": " + entity.executorHandler
       }
     },
 
@@ -223,6 +226,13 @@ const AppManager: React.FC = () => {
 
   return (
     <PageContainer>
+      <JobSearch onSearch={(allValues)=>{
+        setParam(allValues);
+        actionRef.current?.reload();
+      }}
+                 initParam={(allValues)=>{
+                   setParam(allValues);
+                 }} />
       <ProTable<API.JobInfo, API.JobPageParams>
         headerTitle={intl.formatMessage({
           id: 'pages.jobManager.job.title',
@@ -233,9 +243,7 @@ const AppManager: React.FC = () => {
 
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          filterType: 'query',
-        }}
+        search={false}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -247,10 +255,13 @@ const AppManager: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
           </Button>,
         ]}
-        request={jobInfoList}
+        request={(params, sorter, filter) => {
+          // 表单搜索项会从 params 传入，传递给后端接口。
+          return jobInfoList({...param,...params});
+        }}
         columns={columns}
       />
-  
+
       <JobCreateForm
         onSubmit={async (value) => {
           const success = await handleAdd(value);

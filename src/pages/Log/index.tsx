@@ -56,8 +56,6 @@ const LogManager: React.FC = () => {
     500 : ["失败", "red"],
   }
 
-
-
   const columns: ProColumns<API.Log>[] = [
     {
       title: (<FormattedMessage id="pages.searchTable.id" defaultMessage="ID"/>),

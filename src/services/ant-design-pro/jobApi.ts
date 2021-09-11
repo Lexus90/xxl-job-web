@@ -9,6 +9,7 @@ import {handResult} from "@/services/ant-design-pro/api";
 export async function jobInfoList(
     params: {
         jobGroup?: number;
+        jobDesc?:string;
         triggerStatus?: number;
         start?: number;
         length?: number;
@@ -18,7 +19,8 @@ export async function jobInfoList(
     return request<API.JobList>('/api/jobinfo/pageList', {
       method: 'POST',
       params: {
-        ...params
+      ...{jobGroup: params.jobGroup,triggerStatus: -1,}||params
+
       },
       ...(options || {}),
     });
