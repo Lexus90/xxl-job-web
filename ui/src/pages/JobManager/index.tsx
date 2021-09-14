@@ -1,5 +1,6 @@
-import { PlusOutlined ,UserOutlined,DownOutlined} from '@ant-design/icons';
-import { Button, message, Input, Drawer,Menu, Dropdown} from 'antd';
+import { PlusOutlined ,UserOutlined,DownOutlined,QuestionCircleOutlined,DeleteTwoTone,EditTwoTone,CopyrightTwoTone,CopyTwoTone
+,StopOutlined,StarOutlined,SearchOutlined,ScanOutlined} from '@ant-design/icons';
+import { Button, message, Input, Drawer,Menu, Dropdown,Popconfirm,Tooltip} from 'antd';
 import React, { useState, useRef } from 'react';
 import { useIntl, FormattedMessage } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
@@ -11,23 +12,42 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/JobUpdateForm';
 import UpdateForm from './components/JobUpdateForm';
 import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
-import { jobList} from '@/services/ant-design-pro/jobApi';
+import { jobList,addJob,update,remove,start,stop,trigger,nextTriggerTime ,registerInfo} from '@/services/ant-design-pro/jobApi';
+
+
 
 /**
  * 添加节点
  *
  * @param fields
  */
-const handleAdd = async (fields: API.RuleListItem) => {
+
+
+ const handleJob = async (fields: API.Job) => {
+
+  try {
+
+    if(fields.id){
+      return handleUpdate(fields);
+    }else{
+
+      return handleAdd(fields);
+    }
+
+  } catch (error) {
+    return false;
+  }
+};
+const handleAdd = async (fields: API.Job) => {
   const hide = message.loading('正在添加');
   try {
-    await addRule({ ...fields });
+    await addJob({ ...fields });
     hide();
     message.success('添加成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
+    message.error('添加失败请重试！'+error);
     return false;
   }
 };
@@ -38,20 +58,16 @@ const handleAdd = async (fields: API.RuleListItem) => {
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
+  const hide = message.loading('正在更新');
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
+    await update({...fields});
     hide();
 
-    message.success('配置成功');
+    message.success('更新成功');
     return true;
   } catch (error) {
     hide();
-    message.error('配置失败请重试！');
+    message.error('更新失败请重试！'+error);
     return false;
   }
 };
@@ -61,15 +77,16 @@ const handleUpdate = async (fields: FormValueType) => {
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
+const handleRemove = async (selectedRows: API.Job[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
+    await remove({...selectedRows});
     hide();
     message.success('删除成功，即将刷新');
+    // if (actionRef.current) {
+    //           actionRef.current.reload();
+    // }
     return true;
   } catch (error) {
     hide();
@@ -78,49 +95,158 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
   }
 };
 
+
+
+
 const JobManager: React.FC = () => {
   /** 新建窗口的弹窗 */
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  // const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 分布更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [modalVisible, handleModalVisible] = useState<boolean>(false);
+  const [isEdit, handleIsEdit] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [showDetailTime, setShowDetailTime] = useState<boolean>(false);
+
+  const [modalRunOnceVisible, handleRunOnceModalVisible] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.Job>();
-  const [selectedRowsState, setSelectedRows] = useState<API.Job[]>([]);
+  const [jobGroup, setJobGroup] = useState<API.JobGroup[]>([]);
+  const [triggerTime, setTriggerTime] = useState<any>([]);
+  const [dataCron, setDataCron] = useState([]);
+
+
+  const menuEditClick = async(selectedRows: API.Job,type:string)=>{
+      
+      setCurrentRow(selectedRows);
+      handleModalVisible(true);
+      handleIsEdit(true);
+
+  };
+
+  const menuRunOnceClick = async(fields: API.Job,type:string)=>{
+
+      handleRunOnceModalVisible(true);
+      setCurrentRow(fields);
+  
+  };
+
+  const menuSearchLogClick = async(selectedRows: API.Job,type:string)=>{
+      
+      
+      console.log(selectedRows,type);
+
+  };
+
+  const menuSearchRegisterNodeClick = async(selectedRows: API.Job,type:string)=>{
+      
+      try {
+        const group = await registerInfo({id:selectedRows.jobGroup});
+        setShowDetail(true);
+        group.type="register";
+        setJobGroup(group.content);
+        return true;
+      } catch (error) {
+        message.error('查询失败请重试！'+error);
+        return false;
+      }
+
+  };
+
+  const menuNextRuntimeClick = async(selectedRows: API.Job,type:string)=>{
+      
+      try {
+        const time = await nextTriggerTime({...selectedRows});
+        setShowDetailTime(true);
+        time.executorHandler=selectedRows.executorHandler;
+        time.jobDesc = selectedRows.jobDesc;
+        
+        for(var i in time.content){
+          time[i] = time.content[i];
+        }
+
+        setTriggerTime(time);
+      } catch (error) {
+        message.error('查询失败请重试！'+error);
+        return false;
+      }
+
+  };
+
+  const menuRunClick = async(selectedRows: API.Job,type:string)=>{
+      
+      const hide = message.loading('正在启动');
+      try {
+        await start({id:selectedRows.id});
+        hide();
+
+        message.success('启动完成');
+        return true;
+      } catch (error) {
+        hide();
+        message.error('启动失败请重试！'+error);
+        return false;
+      }
+
+  };
+  const menuStopClick = async(selectedRows: API.Job,type:string)=>{
+      
+      const hide = message.loading('正在停止');
+      try {
+        await stop({id:selectedRows.id});
+        hide();
+
+        message.success('停止触发完成');
+        return true;
+      } catch (error) {
+        hide();
+        message.error('停止失败请重试！'+error);
+        return false;
+      }
+
+  };
+
+  const menuDeleteClick = async(selectedRows: API.Job,type:string)=>{
+      
+      handleRemove(selectedRows);
+  };
+
+  const menuCopyClick = async(selectedRows: API.Job,type:string)=>{
+  
+      var editValues = {};
+      for(var i in selectedRows){
+        if(i=='id')
+          continue;
+        editValues[i]=selectedRows[i];
+      }
+      
+      handleModalVisible(true);
+      handleIsEdit(false);
+      setCurrentRow(editValues);
+
+  };
+
+
 
   /** 国际化配置 */
   const intl = useIntl();
+  const columnsTime=[
 
-  const menu =(
-      <Menu>
-            <Menu.Item key="runOnce" icon={<UserOutlined />}>
-              执行一次
-            </Menu.Item>
-            <Menu.Item key="searchLog" icon={<UserOutlined />}>
-              查询日志
-            </Menu.Item>
-            <Menu.Item key="searchRegisterNode" icon={<UserOutlined />}>
-              注册节点
-            </Menu.Item>
-            <Menu.Item key="nextRuntime" icon={<UserOutlined />}>
-              下次执行时间
-            </Menu.Item>
-            <Menu.Item key="run" icon={<UserOutlined />}>
-              启动
-            </Menu.Item>
-            <Menu.Item key="edit" icon={<UserOutlined />}>
-              编辑
-            </Menu.Item>
-            <Menu.Item key="delete" icon={<UserOutlined />}>
-              删除
-            </Menu.Item>
-            <Menu.Item key="copy" icon={<UserOutlined />}>
-              复制
-            </Menu.Item>
-          </Menu>
-    );
+    {title:'executorHandler',dataIndex:'executorHandler'},
+    
+    {
+      title:'下次执行时间',dataIndex:'0',
+    },{
+      title:'下次执行时间',dataIndex:'1',
+    },{
+      title:'下次执行时间',dataIndex:'2',
+    },{
+      title:'下次执行时间',dataIndex:'3',
+    },{
+      title:'下次执行时间',dataIndex:'4',
+    },
+  ];
 
   const columns: ProColumns<API.Job>[] = [
     {
@@ -179,23 +305,23 @@ const JobManager: React.FC = () => {
       dataIndex: 'triggerStatus',
       hideInForm: false,
       valueEnum: {
-        0: {
+        2: {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.all" defaultMessage="ALL" />
+            <FormattedMessage id="pages.searchTable.nameStatus.all" defaultMessage="初始" />
           ),
-          status: -1,
+          triggerStatus: -1,
         },
-        1: {
+        0: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.stop" defaultMessage="STOP" />
           ),
-          status: 0,
+          triggerStatus: 0,
         },
-        2: {
+        1: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="RUNNING" />
           ),
-          status: 1,
+          triggerStatus: 1,
         },
       },
     },
@@ -204,9 +330,69 @@ const JobManager: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <Dropdown overlay={menu}>
-          <Button type="primary">
+        <Dropdown  trigger='click'overlay={
+      <Menu >
+            <Menu.Item key="runOnce" icon={<UserOutlined />} onClick={()=>menuRunOnceClick(record,"runOnce")}>
+              执行一次
+            </Menu.Item>
+            <Menu.Item key="searchLog" icon={<SearchOutlined />} onClick={()=>menuSearchLogClick(record,"searchLog")}>
+              查询日志
+            </Menu.Item>
+            <Menu.Item key="searchRegisterNode" icon={<SearchOutlined />} onClick={()=>menuSearchRegisterNodeClick(record,"searchLog")}>
+              注册节点
+            </Menu.Item>
+            <Menu.Item key="nextRuntime" icon={<SearchOutlined />} onClick={()=>menuNextRuntimeClick(record,"searchLog")}>
+              下次执行时间
+            </Menu.Item>
+            <Popconfirm id="pages.searchTable.start"
+                      icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                      title= { "确认启动："+record.jobDesc+"任务?"}
+                      onConfirm={
+                        async () => {
+                          menuRunClick(record,"searchLog");
+                          actionRef.current?.reloadAndRest?.();
+                        }}>
+              <Menu.Item key="run" icon={<StarOutlined />}  disabled={record.triggerStatus==1}>
+                启动
+              </Menu.Item>
+            </Popconfirm>
+              <Popconfirm id="pages.searchTable.start"
+                        icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                        title= { "确认停止："+record.jobDesc+"任务?"}
+                        onConfirm={
+                          async () => {
+                            menuStopClick(record,"searchLog");
+                            actionRef.current?.reloadAndRest?.();
+                          }}>
+              <Menu.Item key="run" icon={<StarOutlined />} disabled={record.triggerStatus!=1}>
+                停止
+              </Menu.Item>
+            </Popconfirm>
+            <Menu.Divider/>
+            <Menu.Item key="edit" icon={<EditTwoTone />} onClick={()=>menuEditClick(record,"searchLog")}>
+              编辑
+            </Menu.Item>
+            <Popconfirm id="pages.searchTable.deletion"
+                      icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                      title= { "确认删除"+record.jobDesc+"?"}
+                      onConfirm={
+                        async () => {
+                          menuDeleteClick(record,"searchLog");
+                          actionRef.current?.reloadAndRest?.();
+                        }}>
+  
+                <Menu.Item key="delete" icon={<DeleteTwoTone />} >
+                  删除
+                </Menu.Item>
+            </Popconfirm>
+            <Menu.Item key="copy" icon={<CopyTwoTone />} onClick={()=>menuCopyClick(record,"searchLog")}>
+              复制
+            </Menu.Item>
+          </Menu>
+    }>
+          <Button type="primary" itemValue={record} trigger='click'>
             操作 <DownOutlined />
+          
           </Button>
         </Dropdown>  
       ],
@@ -217,7 +403,7 @@ const JobManager: React.FC = () => {
     <PageContainer>
       <ProTable<API.Job, API.JobPageParams>
         headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
+          id: 'pages.searchTable.job.title',
           defaultMessage: '任务列表',
         })}
         actionRef={actionRef}
@@ -231,6 +417,7 @@ const JobManager: React.FC = () => {
             key="primary"
             onClick={() => {
               handleModalVisible(true);
+              handleIsEdit(false);
             }}
           >
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
@@ -239,83 +426,141 @@ const JobManager: React.FC = () => {
         request={jobList}
         columns={columns}
       />
-      <ModalForm
+      {<ModalForm
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: '新建规则',
+          id: 'pages.searchTable.createForm.startOnce',
+          defaultMessage: '执行一次',
         })}
         width="400px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as API.RuleListItem);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
+        modalProps={{
+            okText: '执行一次',
+            destroyOnClose: true,
         }}
+   
+        onFinish={async (value) => {
+
+          const hide = message.loading('正在触发');
+          try {
+            await trigger(value);
+            hide();
+            message.success('触发完成');
+            return true;
+          } catch (error) {
+            hide();
+            message.error('触发失败请重试！'+error);
+            return false;
+          }
+          
+        }}
+        width="50%"
+      visible={modalRunOnceVisible}
+      onVisibleChange={handleRunOnceModalVisible}
+      values = {currentRow || {}}
       >
+
+
         <ProFormText
+          name="id"
+          initialValue={!currentRow?{}:currentRow.id}
+          hidden={true}
+
+        />
+        <ProFormTextArea
           rules={[
             {
-              required: true,
+              
               message: (
                 <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="规则名称为必填项"
+                  id="pages.searchTable.taskArgs"
+                  defaultMessage="任务参数"
                 />
               ),
             },
           ]}
+          placeholder="请输入任务参数"
           width="md"
-          name="name"
+          name="executorParam" label="任务参数"
         />
-        <ProFormTextArea width="md" name="desc" />
-      </ModalForm>
+        <ProFormTextArea rules={[
+            {
+              
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.address"
+                  defaultMessage="机器地址"
+                />
+              ),
+            },
+          ]}
+          placeholder="请输入本次执行的机器地址，为空则从服务获取"
+          width="md" name="addressList"  label="机器地址"/>
+      </ModalForm>}
 
       <UpdateForm
         onSubmit={async (value) => {
-          const success = await handleUpdate(value);
+          value.corn = dataCron;
+          const success = await handleJob(value);
           if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
+            handModalVisible(false);
+            setCurrentRow([]);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
         onCancel={() => {
-          handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
+          handleModalVisible(false);
+          setCurrentRow([]);
         }}
-        updateModalVisible={updateModalVisible}
+        modalVisible={modalVisible}
         values={currentRow || {}}
+        isEdit={isEdit}
+        onChange={(e)=>{
+          setDataCron(e);
+        }}
+        dataCron={dataCron}
       />
 
       <Drawer
         width={600}
         visible={showDetail}
         onClose={() => {
-          setCurrentRow(undefined);
+          setJobGroup([]);
           setShowDetail(false);
         }}
-        closable={false}
+        closable={true}
+        title="注册信息"
       >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.name}
+      <p>应用名称：{jobGroup.appname}</p>
+      <p>地址：{jobGroup.addressList}</p>
+      <p>注册地址：{jobGroup.registryList}</p>
+      
+      </Drawer>
+      <Drawer
+        width={600}
+        visible={showDetailTime}
+        onClose={() => {
+          setTriggerTime([]);
+          setShowDetailTime(false);
+        }}
+        closable={true}
+        title="下次执行时间"
+      >
+      {triggerTime?.executorHandler && (
+          <ProDescriptions
+            column={1}
+            title={''}
             request={async () => ({
-              data: currentRow || {},
+              data: triggerTime || {},
             })}
             params={{
-              id: currentRow?.name,
+              executorHandler: triggerTime?.executorHandler,
+              content:triggerTime?.content,
             }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
+            columns={columnsTime}
           />
         )}
+      
       </Drawer>
     </PageContainer>
   );
