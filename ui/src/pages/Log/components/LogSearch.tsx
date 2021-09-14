@@ -19,7 +19,7 @@ type AdvancedSearchProps = {
   initParam?: (allValues: API.LogPageParams) => void;
 };
 
-const AdvancedSearch: React.FC<AdvancedSearchProps> = (props) => {
+const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
   const [jobs, setJobs] = useState<{ value: number, label: string }[]>([]);
   const [curAppId, setCurAppId] = useState<number>(0);
   const [curJobId, setCurJobId] = useState<number>(0);
@@ -94,4 +94,4 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = (props) => {
   );
 };
 
-export default AdvancedSearch;
+export default LogSearch;

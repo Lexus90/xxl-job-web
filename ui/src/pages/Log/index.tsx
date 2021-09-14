@@ -15,7 +15,7 @@ import ProTable from '@ant-design/pro-table';
 import type { FormValueType } from './components/LogUpdateForm';
 import {logList, updateLog, addLog, removeLog, stopJob, logBaseInfo} from '@/services/ant-design-pro/logApi';
 import { useAccess, Access } from 'umi';
-import AdvancedSearch from "@/pages/Log/components/AdvancedSearch";
+import LogSearch from "@/pages/Log/components/LogSearch";
 
 const handleStopJob = async (fields: FormValueType) => {
   const hide = message.loading('正在终止');
@@ -251,11 +251,11 @@ const LogManager: React.FC = () => {
 
   return (
     <PageContainer>
-      <AdvancedSearch onSearch={(allValues)=>{
+      <LogSearch onSearch={(allValues)=>{
                                 setParam(allValues);
                                 actionRef.current?.reload();
                               }}
-                      initParam={(allValues)=>{
+                 initParam={(allValues)=>{
                                   setParam(allValues);
                                 }} />
       <ProTable<API.Log, API.LogPageParams>
