@@ -9,11 +9,8 @@ import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import {listAccessApps} from "@/services/ant-design-pro/appApi";
 import {loginUrl} from "@/services/ant-design-pro/userApi";
-import {API_PATH} from "@/utils/utils";
 
 const isDev = process.env.NODE_ENV === 'development';
-// const loginPath = '/user/login';
-// const loginPath = '/api/currentUser';
 let loginPath = "";
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {

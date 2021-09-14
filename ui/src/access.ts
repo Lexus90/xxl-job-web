@@ -6,10 +6,11 @@ export default function access(initialState:
   accessApps?: API.AppInfo[]
   }) {
   const { currentUser, accessApps } = initialState || {};
+  const isDev = process.env.NODE_ENV === 'development';
   return {
-    canAdmin: () => (currentUser && currentUser.role === 1),
-    isAdmin: (currentUser && currentUser.role === 1),
-    accessAble: (currentUser && currentUser.role === 1),
+    canAdmin: () => (currentUser && currentUser.role === 1 || isDev),
+    isAdmin: (currentUser && currentUser.role === 1 || isDev),
+    accessAble: (currentUser && currentUser.role === 1 || isDev),
     accessApps: (accessApps),
     readable: () => !currentUser,
   };
