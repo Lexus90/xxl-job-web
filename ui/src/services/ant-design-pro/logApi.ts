@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { request } from 'umi';
 import {handleResult} from "@/services/ant-design-pro/api";
+import {API_PATH} from "@/utils/utils";
 
 /** 获取APP_ID列表 POST /api/jobgroup/pageList */
 export async function logList(
@@ -15,7 +16,7 @@ export async function logList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.LogList>('/api/joblog/pageList', {
+  return request<API.LogList>(API_PATH+'/joblog/pageList', {
     method: 'POST',
     params: {
       jobGroup: !params.jobGroup ? 0 : params.jobGroup,
@@ -36,7 +37,7 @@ export async function removeLog(
     type?: number;
   },
   options?: { [key: string]: any }) {
-  return request<API.ReturnT>('/api/joblog/clearLog', {
+  return request<API.ReturnT>(API_PATH+'/joblog/clearLog', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
@@ -48,7 +49,7 @@ export async function stopJob(
     id?: number;
   },
   options?: { [key: string]: any }) {
-  return request<API.ReturnT>('/api/joblog/logKill', {
+  return request<API.ReturnT>(API_PATH+'/joblog/logKill', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
@@ -74,7 +75,7 @@ export function logBaseInfo(
     logStatus?: number;
   },
   options?: { [key: string]: any }) {
-   request<API.LogBaseInfo>('/api/joblog/baseInfo', {
+   request<API.LogBaseInfo>(API_PATH+'/joblog/baseInfo', {
     method: 'POST',
     params: {...params},
     ...(options || {}),

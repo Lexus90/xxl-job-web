@@ -7,9 +7,9 @@ export default function access(initialState:
   }) {
   const { currentUser, accessApps } = initialState || {};
   return {
-    canAdmin: () => (currentUser && currentUser.access === 'admin'),
-    isAdmin: (currentUser && currentUser.access === 'admin'),
-    accessAble: (currentUser && currentUser.access === 'admin'),
+    canAdmin: () => (currentUser && currentUser.role === 1),
+    isAdmin: (currentUser && currentUser.role === 1),
+    accessAble: (currentUser && currentUser.role === 1),
     accessApps: (accessApps),
     readable: () => !currentUser,
   };

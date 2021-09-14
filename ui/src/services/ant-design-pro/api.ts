@@ -1,6 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from 'umi';
+import {API_PATH} from "@/utils/utils";
 
 export const handleResult =(result : API.ReturnT) => {
   if (result.code == 200) {
@@ -11,7 +12,7 @@ export const handleResult =(result : API.ReturnT) => {
 }
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<API.CurrentUser>('/api/currentUser', {
+  return request<{code:number, content:API.CurrentUser}>(API_PATH+'/currentUser', {
     method: 'GET',
     ...(options || {}),
   });

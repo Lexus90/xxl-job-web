@@ -2,12 +2,13 @@
 /* eslint-disable */
 import { request } from 'umi';
 import {handleResult} from "@/services/ant-design-pro/api";
+import {API_PATH} from "@/utils/utils";
 
 /** 获取APP_ID列表 POST /api/jobgroup/pageList */
 export async function listAccessApps(
   options?: { [key: string]: any },
 ) {
-  return request<API.AppList>('/api/jobgroup/accessApps', {
+  return request<API.AppList>(API_PATH+'/jobgroup/accessApps', {
     method: 'POST',
     ...(options || {}),
   });
@@ -22,7 +23,7 @@ export async function appList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.AppList>('/api/jobgroup/pageList', {
+  return request<API.AppList>(API_PATH+'/jobgroup/pageList', {
     method: 'POST',
     params: {
       appname: params.appname,
@@ -45,7 +46,7 @@ export async function updateApp(
   },
   options?: { [key: string]: any }
   ) {
-  return request<API.ReturnT>('/api/jobgroup/update', {
+  return request<API.ReturnT>(API_PATH+'/jobgroup/update', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
@@ -62,7 +63,7 @@ export async function addApp(
   },
   options?: { [key: string]: any }
   ) {
-  return request<API.ReturnT>('/api/jobgroup/save', {
+  return request<API.ReturnT>(API_PATH+'/jobgroup/save', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
@@ -75,7 +76,7 @@ export async function removeApp(
     id?: number;
   },
   options?: { [key: string]: any }) {
-  return request<API.ReturnT>('/api/jobgroup/remove', {
+  return request<API.ReturnT>(API_PATH+'/jobgroup/remove', {
     method: 'POST',
     params: {...params},
     ...(options || {}),

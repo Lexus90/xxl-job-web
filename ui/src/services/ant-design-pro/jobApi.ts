@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from 'umi';
 import {handResult} from "@/services/ant-design-pro/api";
-
+import {API_PATH} from "@/utils/utils";
 
 
 /** 获取APP_ID列表 POST /api/jobgroup/pageList */
@@ -16,7 +16,8 @@ export async function jobInfoList(
     },
     options?: { [key: string]: any },
   ) {
-    return request<API.JobList>('/api/jobinfo/pageList', {
+  console.log("process.env = {}" , process.env);
+    return request<API.JobList>(API_PATH+'/jobinfo/pageList', {
       method: 'POST',
       params: {
       ...{jobGroup: params.jobGroup,triggerStatus: -1,}||params
@@ -32,7 +33,7 @@ export async function jobInfoList(
     },
     options?: { [key: string]: any },
   ) {
-    return request<API.JobList>('/api/joblog/getJobsByGroup', {
+    return request<API.JobList>(API_PATH+'/joblog/getJobsByGroup', {
       method: 'POST',
       params: {
         ...params
@@ -52,7 +53,7 @@ export async function jobInfoList(
     },
     options?: { [key: string]: any }
     ) {
-    return request<API.ReturnT>('/api/jobgroup/update', {
+    return request<API.ReturnT>(API_PATH+'/jobgroup/update', {
       method: 'POST',
       params: {...params},
       ...(options || {}),
@@ -69,7 +70,7 @@ export async function jobInfoList(
     },
     options?: { [key: string]: any }
     ) {
-    return request<API.ReturnT>('/api/jobgroup/save', {
+    return request<API.ReturnT>(API_PATH+'/jobgroup/save', {
       method: 'POST',
       params: {...params},
       ...(options || {}),
@@ -82,7 +83,7 @@ export async function jobInfoList(
       id?: number;
     },
     options?: { [key: string]: any }) {
-    return request<API.ReturnT>('/api/jobgroup/remove', {
+    return request<API.ReturnT>(API_PATH+'/jobgroup/remove', {
       method: 'POST',
       params: {...params},
       ...(options || {}),

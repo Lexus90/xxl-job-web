@@ -2,11 +2,22 @@
 /* eslint-disable */
 import { request } from 'umi';
 import {handleResult} from "@/services/ant-design-pro/api";
+import {API_PATH} from "@/utils/utils";
 
 const roleEnum =  {
   all: -1,
   normal: 0,
   admin:1,
+}
+
+export function loginUrl(
+
+  options?: { [key: string]: any },
+) {
+  return request<{code:number, content:string}>(API_PATH+'/loginUrl', {
+    method: 'GET',
+    ...(options || {}),
+  });
 }
 
 /** 获取user列表 POST /api/user/pageList */
@@ -19,7 +30,7 @@ export async function userList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.UserList>('/api/user/pageList', {
+  return request<API.UserList>(API_PATH+'/user/pageList', {
     method: 'POST',
     params: {
       role: roleEnum[params.role],
@@ -41,7 +52,7 @@ export async function updateUser(
   },
   options?: { [key: string]: any }
   ) {
-  return request<API.ReturnT>('/api/user/update', {
+  return request<API.ReturnT>(API_PATH+'/user/update', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
@@ -59,7 +70,7 @@ export async function addUser(
   },
   options?: { [key: string]: any }
   ) {
-  return request<API.ReturnT>('/api/user/add', {
+  return request<API.ReturnT>(API_PATH+'/user/add', {
     method: 'POST',
     params: {...params},
     ...(options || {}),
@@ -72,7 +83,7 @@ export async function removeUser(
     id?: number;
   },
   options?: { [key: string]: any }) {
-  return request<API.ReturnT>('/api/user/remove', {
+  return request<API.ReturnT>(API_PATH+'/user/remove', {
     method: 'POST',
     params: {...params},
     ...(options || {}),

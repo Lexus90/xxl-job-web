@@ -1,17 +1,20 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import { notification } from 'antd';
-import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import {RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history, Link } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import {listAccessApps} from "@/services/ant-design-pro/appApi";
+import {loginUrl} from "@/services/ant-design-pro/userApi";
+import {API_PATH} from "@/utils/utils";
 
 const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login';
-
+// const loginPath = '/user/login';
+// const loginPath = '/api/currentUser';
+let loginPath = "";
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
   loading: <PageLoading />,
@@ -22,20 +25,35 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
+  loginUrl?: string;
   currentUser?: API.CurrentUser;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
   fetchAccessApps?: () => Promise<API.AppInfo[] | undefined>;
   accessApps: API.AppInfo[];
 }> {
+
   const fetchUserInfo = async () => {
     try {
-      const currentUser = await queryCurrentUser();
+      let currentUser = {};
+      let ret =  await queryCurrentUser();
+      if (ret.code == 200) {
+        return ret.content;
+      }
       return currentUser;
     } catch (error) {
-      history.push(loginPath);
+      console.log("fetchUserInfo = " + error);
+      let ret  = await loginUrl();
+      loginPath= ret.content;
+      toLogin();
     }
     return undefined;
   };
+
+  const toLogin = () => {
+    if (!isDev) {
+      window.location.href=loginPath;
+    }
+  }
 
   const fetchAccessApps = async () => {
     try {
@@ -44,7 +62,7 @@ export async function getInitialState(): Promise<{
         return ret.data;
       }
     } catch (error) {
-      history.push(loginPath);
+      toLogin()
     }
     return [];
   };
@@ -131,7 +149,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       const { location } = history;
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+        console.log("如果没有登录，重定向到 login = " + location.pathname);
+        // history.push(loginPath);
       }
     },
     links: isDev
