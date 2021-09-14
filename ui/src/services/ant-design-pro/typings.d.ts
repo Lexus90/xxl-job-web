@@ -103,6 +103,24 @@ declare namespace API {
     alarmStatus?: number;
   }
 
+  type LogBaseInfo = {
+    content?: {
+      JobGroupList?: AppInfo[],
+      logStatus: number,
+      jobInfo: {},
+    };
+
+    /** 列表的内容总数 */
+    code?: number;
+    msg?: string;
+  }
+
+  type Job = {
+    id?: number;
+    executorHandler? :string;
+    jobDesc? :string;
+  }
+
 
   type CurrentUser = {
     name?: string;
@@ -200,4 +218,48 @@ declare namespace API {
     description?: string;
     type?: NoticeIconItemType;
   };
+
+    // App 相关实体类
+  type JobPageParams = {
+      appname?: number;
+      title?: number;
+      start?: number;
+      length?: number;
+    };
+
+    type JobInfo = {
+      id: number;
+      jobGroup: number;
+      jobDesc: string;
+      addTime: Date;
+      updateTime: Date;
+      author: string;
+      alarmEmail?: any;
+      alarm: number;
+      scheduleType: string;
+      scheduleConf: string;
+      misfireStrategy: string;
+      executorRouteStrategy: string;
+      executorHandler: string;
+      executorParam: string;
+      executorBlockStrategy: string;
+      executorTimeout: number;
+      executorFailRetryCount: number;
+      glueType: string;
+      glueSource: string;
+      glueRemark: string;
+      glueUpdatetime: Date;
+      childJobId: string;
+      triggerStatus: number;
+      triggerLastTime: number;
+      triggerNextTime: number;
+    };
+
+    type JobList = {
+      content?: JobInfo[];
+      /** 列表的内容总数 */
+      recordsTotal?: number;
+      recordsTotal?: number;
+    }
+
 }

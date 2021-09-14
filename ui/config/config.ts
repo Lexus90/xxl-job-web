@@ -13,6 +13,7 @@ export default defineConfig({
   //hash: true,
   publicPath: '/',
   antd: {},
+  history: { type: 'hash' },
   dva: {
     hmr: true,
   },
