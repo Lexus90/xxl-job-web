@@ -3,11 +3,11 @@
 import { request } from 'umi';
 import {API_PATH} from "@/utils/utils";
 
-export const handleResult =(result : API.ReturnT) => {
+export const handResult =(result : API.ReturnT) => {
   if (result.code == 200) {
     // message.success('删除成功，即将刷新');
   }else {
-    throw new Error(" 原因:"+result.msg);
+    throw new Error(" 原因:"+ result.msg);
   }
 }
 /** 获取当前的用户 GET /api/currentUser */

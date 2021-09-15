@@ -10,7 +10,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import {useAccess, Access} from 'umi';
 import {getJobsByGroup, jobInfoList} from "@/services/ant-design-pro/jobApi";
-
+import styles from './style.less';
 // const [jobs, setJobs] = useState<any>();
 
 type AdvancedSearchProps = {
@@ -51,6 +51,7 @@ const JobSearch: React.FC<AdvancedSearchProps> = (props) => {
   };
 
   return (
+    <Card className={styles.card} >
     <QueryFilter<{
       jobGroup: number;
       jobId: number;
@@ -66,31 +67,34 @@ const JobSearch: React.FC<AdvancedSearchProps> = (props) => {
       onFinish={async (values) => {
         props.onSearch?.(values);
       }}
+      defaultColsNumber={2}
     >
 
-      <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup" label="服务" showSearch
+            <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup" label="服务" showSearch
                      options={openList}
                      fieldProps={{
                        onChange: (e) => initJobs(e),
                      }}/>
-
-      <ProFormSelect name="jobId" label="任务" width="sm" showSearch options={jobs}
-                     fieldProps={{
-                       value: curJobId
-                     }}
-      />
-
-      <ProFormSelect name="logStatus" label="状态" width="sm"
+        
+            <ProFormText name="jobDesc" label="任务描述" width="sm"/>
+          
+            <ProFormSelect name="triggerStatus" label="状态" width="sm"
                      options={[
-                       {value: 0, label: '全部',},
-                       {value: 1, label: '成功',},
-                       {value: 2, label: '失败',},
-                       {value: 3, label: '运行种',},
+                       {value: -1, label: '全部',},
+                       {value: 1, label: '运行中',},
+                       {value: 0, label: '停止',},
                      ]}/>
 
-      <ProFormDateRangePicker name="filterTime" label="调度时间" colSize={1}/>
+                    
+
+                     <ProFormText name="executorHandler" label="JobHandler" width="sm"/>
+          
+            <ProFormText name="author" label="负责人" colSize={1}/>
+          
 
     </QueryFilter>
+    <div/>
+    </Card>
   );
 };
 

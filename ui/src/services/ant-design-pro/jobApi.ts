@@ -1,5 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
 import { request } from 'umi';
 import {handResult} from "@/services/ant-design-pro/api";
 import {API_PATH} from "@/utils/utils";
