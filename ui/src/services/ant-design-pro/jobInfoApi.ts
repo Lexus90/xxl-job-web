@@ -23,7 +23,7 @@ export async function jobList(
       triggerStatus: !params.triggerStatus ? -1 : params.triggerStatus,
       jobDesc: !params.jobDesc ? "" :params.jobDesc,
       executorHandler: !params.executorHandler ? "" : params.executorHandler,
-      start: params.current-1,
+      start: !params.current ? 0 : (params.current-1) * params.pageSize,
       author: !params.author ? "" :params.author,
       length: params.pageSize,
     },

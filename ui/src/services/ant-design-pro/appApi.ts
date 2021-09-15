@@ -28,7 +28,7 @@ export async function appList(
     params: {
       appname: params.appname,
       title: params.title,
-      start: params.current-1,
+      start: !params.current ? 0 : (params.current-1) * params.pageSize,
       length: params.pageSize,
     },
     ...(options || {}),

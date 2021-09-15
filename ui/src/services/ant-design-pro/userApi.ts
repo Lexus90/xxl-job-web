@@ -35,7 +35,7 @@ export async function userList(
     params: {
       role: roleEnum[params.role],
       username: params.username,
-      start: params.current-1,
+      start: !params.current ? 0 : (params.current-1) * params.pageSize,
       length: params.pageSize,
     },
     ...(options || {}),

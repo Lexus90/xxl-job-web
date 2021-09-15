@@ -15,12 +15,12 @@
       },
     ],
   },
-  {
-    path: '/welcome',
-    name: 'Dashboard',
-    icon: 'dashboard',
-    component: './Welcome',
-  },
+  // {
+  //   path: '/welcome',
+  //   name: 'Dashboard',
+  //   icon: 'dashboard',
+  //   component: './Welcome',
+  // },
   // {
   //   path: '/admin',
   //   name: 'admin',
