@@ -1,10 +1,6 @@
 import React, {useState} from 'react';
-import {Card, Col, Input, Row, Select, Tabs} from 'antd';
-import {UpOutlined, DownOutlined} from '@ant-design/icons';
 import ProForm, {
   QueryFilter,
-  ProFormText,
-  ProFormDatePicker,
   ProFormDateRangePicker,
   ProFormSelect
 } from '@ant-design/pro-form';
@@ -25,7 +21,6 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
   const [curJobId, setCurJobId] = useState<number>(0);
   const access = useAccess();
 
-
   const openList = [];
   access.accessApps?.forEach(function (e) {
     openList.push({label: e.appname + "[" + e.title + "]", value: e.id})
@@ -40,6 +35,7 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
   const initJobs = jobGroupId => {
     setCurAppId(jobGroupId)
     const jobOptions = [];
+    jobOptions.push({value: -1, label: "全部任务"})
     getJobsByGroup({jobGroup: jobGroupId})
       .then(ret => {
         ret.content?.forEach(job => {
@@ -56,6 +52,8 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
       jobId: number;
       logStatus: number;
     }>
+      span={4}
+      ignoreRules={false}
       defaultCollapsed={false}
       initialValues={initVal}
       onInit={(values) => {
@@ -67,28 +65,47 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
         props.onSearch?.(values);
       }}
     >
-
-      <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup" label="服务" showSearch
+      <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup"
+                     // label={"服务"}
+                     showSearch
                      options={openList}
                      fieldProps={{
                        onChange: (e) => initJobs(e),
                      }}/>
 
-      <ProFormSelect name="jobId" label="任务" width="sm" showSearch options={jobs}
+      <ProFormSelect name="jobId" showSearch options={jobs}
+                     // label={"任务"}
+                     colSize={1}
                      fieldProps={{
-                       value: curJobId
+                       // style: {maxWidth: 150},
+                       value: curJobId,
+                       onChange: (jobId) => setCurJobId(jobId)
                      }}
       />
 
-      <ProFormSelect name="logStatus" label="状态" width="sm"
+      <ProFormSelect name="logStatus"
+                     // label={"状态"}
+                     fieldProps={{
+                       // style: {maxWidth: 70},
+                     }}
+                    // colSize={0.5}
                      options={[
-                       {value: 0, label: '全部',},
+                       {value: 0, label: '全部状态',},
                        {value: 1, label: '成功',},
                        {value: 2, label: '失败',},
-                       {value: 3, label: '运行种',},
+                       {value: 3, label: '运行中',},
                      ]}/>
 
-      <ProFormDateRangePicker name="filterTime" label="调度时间" colSize={1}/>
+      <ProFormDateRangePicker name="filterTime"
+                              tooltip= "调度时间"
+
+                              placeholder={["调度","时间"]}
+                              // label="调度时间"
+                              fieldProps={{
+                                // style: {maxWidth: 170},
+                              }}
+                              colSize={2}
+      />
 
     </QueryFilter>
   );
