@@ -16,6 +16,7 @@ export async function logList(
   },
   options?: { [key: string]: any },
 ) {
+  console.log("logList params = {}", params)
   return request<API.LogList>(API_PATH+'/joblog/pageList', {
     method: 'POST',
     params: {
@@ -23,8 +24,8 @@ export async function logList(
       jobId: !params.jobId ? -1 : params.jobId,
       logStatus: !params.logStatus ? -1 :params.logStatus,
       filterTime: params.filterTime,
-      start: 0,
-      length: params.pageSize ? 10:params.pageSize,
+      start: !params.current ? 0 : (params.current - 1)*params.pageSize,
+      length: params.pageSize ? 10 : params.pageSize,
     },
     ...(options || {}),
   });
@@ -60,7 +61,6 @@ export async function stopJob(
 const openList = [];
 
 const fillChil = (a : API.AppInfo) => {
-  // console.log("openList = " +a.appname);
   openList.push("<Option key={a.appname}>{a.title}</Option>");
 }
 

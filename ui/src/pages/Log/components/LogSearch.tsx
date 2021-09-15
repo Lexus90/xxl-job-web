@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import ProForm, {
   QueryFilter,
   ProFormDateRangePicker,
-  ProFormSelect
+  ProFormSelect, ProFormDateTimePicker, ProFormDateTimeRangePicker
 } from '@ant-design/pro-form';
 import {useAccess, Access} from 'umi';
 import {getJobsByGroup, jobInfoList} from "@/services/ant-design-pro/jobApi";
@@ -28,8 +28,9 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
 
   const initVal = {
     logStatus: 0,
-    jobGroup: access.accessApps[0]?.id,
+    jobGroup: access?.accessApps[0]?.id,
     jobId: curJobId,
+    filterTimes: [new Date().setHours(0, 0, 0), new Date().setHours(23, 59, 59)],
   };
 
   const initJobs = jobGroupId => {
@@ -51,6 +52,7 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
       jobGroup: number;
       jobId: number;
       logStatus: number;
+      filterTimes: string;
     }>
       span={4}
       ignoreRules={false}
@@ -62,9 +64,12 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
       }}
 
       onFinish={async (values) => {
-        props.onSearch?.(values);
+        let filterTimes = values.filterTimes;
+        let ft = filterTimes[0]+" - "+filterTimes[1];
+        props.onSearch?.({ ...{filterTime:ft} ,...values});
       }}
     >
+
       <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup"
                      // label={"服务"}
                      showSearch
@@ -77,7 +82,6 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
                      // label={"任务"}
                      colSize={1}
                      fieldProps={{
-                       // style: {maxWidth: 150},
                        value: curJobId,
                        onChange: (jobId) => setCurJobId(jobId)
                      }}
@@ -85,10 +89,6 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
 
       <ProFormSelect name="logStatus"
                      // label={"状态"}
-                     fieldProps={{
-                       // style: {maxWidth: 70},
-                     }}
-                    // colSize={0.5}
                      options={[
                        {value: 0, label: '全部状态',},
                        {value: 1, label: '成功',},
@@ -96,14 +96,9 @@ const LogSearch: React.FC<AdvancedSearchProps> = (props) => {
                        {value: 3, label: '运行中',},
                      ]}/>
 
-      <ProFormDateRangePicker name="filterTime"
+      <ProFormDateTimeRangePicker name="filterTimes"
                               tooltip= "调度时间"
-
                               placeholder={["调度","时间"]}
-                              // label="调度时间"
-                              fieldProps={{
-                                // style: {maxWidth: 170},
-                              }}
                               colSize={2}
       />
 
