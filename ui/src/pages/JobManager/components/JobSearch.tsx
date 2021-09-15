@@ -43,7 +43,10 @@ const JobSearch: React.FC<AdvancedSearchProps> = (props) => {
     getJobsByGroup({jobGroup: jobGroupId})
       .then(ret => {
         ret.content?.forEach(job => {
-          jobOptions.push({value: job.id, label: job.jobDesc + "[" + job.executorHandler + "]"})
+          jobOptions.push({
+            value: job.jobDesc + ":" + job.executorHandler,
+            label: job.jobDesc + "[" + job.executorHandler + "]",
+          })
         })
         setJobs(jobOptions);
         setCurJobId(jobOptions[0]?.value)
@@ -51,49 +54,54 @@ const JobSearch: React.FC<AdvancedSearchProps> = (props) => {
   };
 
   return (
-    <Card className={styles.card} >
-    <QueryFilter<{
-      jobGroup: number;
-      jobId: number;
-      logStatus: number;
-    }>
-      defaultCollapsed={false}
-      initialValues={initVal}
-      onInit={(values) => {
-        initJobs(initVal.jobGroup);
-        props.initParam?.(initVal);
-      }}
+    <Card className={styles.card}>
+      <QueryFilter<{
+        jobGroup: number;
+        jobId: number;
+        triggerStatus: number;
+      }>
+        span={6}
+        defaultCollapsed={false}
+        initialValues={initVal}
+        onInit={(values) => {
+          initJobs(initVal.jobGroup);
+          props.initParam?.(initVal);
+        }}
 
-      onFinish={async (values) => {
-        props.onSearch?.(values);
-      }}
-      defaultColsNumber={2}
-    >
+        onFinish={async (values) => {
+          console.log("values = {}", values);
+          props.onSearch?.(values);
+        }}
 
-            <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup" label="服务" showSearch
-                     options={openList}
-                     fieldProps={{
-                       onChange: (e) => initJobs(e),
-                     }}/>
-        
-            <ProFormText name="jobDesc" label="任务描述" width="sm"/>
-          
-            <ProFormSelect name="triggerStatus" label="状态" width="sm"
-                     options={[
-                       {value: -1, label: '全部',},
-                       {value: 1, label: '运行中',},
-                       {value: 0, label: '停止',},
-                     ]}/>
+        defaultColsNumber={2}
+      >
+        <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup"
+                       showSearch
+                       options={openList}
+                       fieldProps={{
+                         onChange: (e) => initJobs(e),
+                       }}/>
 
-                    
+        <ProFormSelect name="jobId" showSearch options={jobs}
+                       colSize={1}
+                       fieldProps={{
+                         value: curJobId,
+                         onChange: (jobId, jobOption) => {
+                           console.log("jobOption = {}", jobOption);
+                           setCurJobId(jobId);
+                         }
 
-                     <ProFormText name="executorHandler" label="JobHandler" width="sm"/>
-          
-            <ProFormText name="author" label="负责人" colSize={1}/>
-          
+                       }}/>
 
-    </QueryFilter>
-    <div/>
+        <ProFormSelect name="triggerStatus" width="sm"
+                       options={[
+                         {value: -1, label: '全部状态',},
+                         {value: 1, label: '运行中',},
+                         {value: 0, label: '停止',},
+                       ]}/>
+
+      </QueryFilter>
+      <div/>
     </Card>
   );
 };

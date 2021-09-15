@@ -264,7 +264,7 @@ const LogManager: React.FC = () => {
           defaultMessage: '日志列表',
         })}
         search={false}
-        showHeader={false}
+        showHeader={true}
         actionRef={actionRef}
         rowKey="id"
         request={(params, sorter, filter) => {
@@ -290,9 +290,9 @@ const LogManager: React.FC = () => {
         }}
       >
         {
-          !currentRow?.handleMsg&&(
+          !!currentRow?.handleMsg && (
             <text style={{whiteSpace:"pre-wrap"}}
-                  dangerouslySetInnerHTML={{__html:"abc"+currentRow?.handleMsg?.replaceAll("Caused by", "<b style='color: red'>Caused by</b>")}}>
+                  dangerouslySetInnerHTML={{__html:currentRow?.handleMsg?.replaceAll("Caused by", "<b style='color: red'>Caused by</b>")}}>
             </text>
           )
         }
