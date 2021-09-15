@@ -18,6 +18,7 @@ export async function jobList(
 ) {
   return request<API.JobInfoList>('/api/jobinfo/pageList', {
     method: 'POST',
+
     params: {
       jobGroup: !params.jobGroup ? 0 : params.jobGroup,
       triggerStatus: !params.triggerStatus ? -1 : params.triggerStatus,
