@@ -9,9 +9,7 @@ import ProForm, {
   ProFormSelect
 } from '@ant-design/pro-form';
 import {useAccess, Access} from 'umi';
-import {getJobsByGroup, jobInfoList} from "@/services/ant-design-pro/jobApi";
 import styles from './style.less';
-// const [jobs, setJobs] = useState<any>();
 
 type AdvancedSearchProps = {
   onFilterChange?: (allValues: API.LogPageParams) => void;
@@ -20,11 +18,8 @@ type AdvancedSearchProps = {
 };
 
 const JobSearch: React.FC<AdvancedSearchProps> = (props) => {
-  const [jobs, setJobs] = useState<{ value: number, label: string }[]>([]);
   const [curAppId, setCurAppId] = useState<number>(0);
-  const [curJobId, setCurJobId] = useState<number>(0);
   const access = useAccess();
-
 
   const openList = [];
   access.accessApps?.forEach(function (e) {
@@ -34,33 +29,21 @@ const JobSearch: React.FC<AdvancedSearchProps> = (props) => {
   const initVal = {
     logStatus: 0,
     jobGroup: access.accessApps[0]?.id,
-    jobId: curJobId
+    triggerStatus:-1,
   };
 
   const initJobs = jobGroupId => {
     setCurAppId(jobGroupId)
-    const jobOptions = [];
-    getJobsByGroup({jobGroup: jobGroupId})
-      .then(ret => {
-        ret.content?.forEach(job => {
-          jobOptions.push({
-            value: job.jobDesc + ":" + job.executorHandler,
-            label: job.jobDesc + "[" + job.executorHandler + "]",
-          })
-        })
-        setJobs(jobOptions);
-        setCurJobId(jobOptions[0]?.value)
-      })
   };
 
   return (
-    <Card className={styles.card}>
       <QueryFilter<{
         jobGroup: number;
-        jobId: number;
+        jobDesc: string;
+        executorHandler: string;
         triggerStatus: number;
       }>
-        span={6}
+        span={4}
         defaultCollapsed={false}
         initialValues={initVal}
         onInit={(values) => {
@@ -72,25 +55,13 @@ const JobSearch: React.FC<AdvancedSearchProps> = (props) => {
           console.log("values = {}", values);
           props.onSearch?.(values);
         }}
-
-        defaultColsNumber={2}
       >
+
         <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup"
                        showSearch
                        options={openList}
                        fieldProps={{
                          onChange: (e) => initJobs(e),
-                       }}/>
-
-        <ProFormSelect name="jobId" showSearch options={jobs}
-                       colSize={1}
-                       fieldProps={{
-                         value: curJobId,
-                         onChange: (jobId, jobOption) => {
-                           console.log("jobOption = {}", jobOption);
-                           setCurJobId(jobId);
-                         }
-
                        }}/>
 
         <ProFormSelect name="triggerStatus" width="sm"
@@ -100,9 +71,10 @@ const JobSearch: React.FC<AdvancedSearchProps> = (props) => {
                          {value: 0, label: '停止',},
                        ]}/>
 
+        <ProFormText name="jobDesc" placeholder="请输入任务描述" width="sm"/>
+
+        <ProFormText name="executorHandler" placeholder="请输入JobHandler" width="sm"/>
       </QueryFilter>
-      <div/>
-    </Card>
   );
 };
 

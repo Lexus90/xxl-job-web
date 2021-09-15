@@ -250,7 +250,10 @@ const LogManager: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer
+      header={{
+      }}
+    >
       <LogSearch onSearch={(allValues)=>{
                                 setParam(allValues);
                                 actionRef.current?.reload();
@@ -264,6 +267,8 @@ const LogManager: React.FC = () => {
           defaultMessage: '日志列表',
         })}
         search={false}
+        size={"small"}
+        options={{density:false, reload:false}}
         showHeader={true}
         actionRef={actionRef}
         rowKey="id"

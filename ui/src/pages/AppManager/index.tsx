@@ -23,6 +23,7 @@ import type { FormValueType } from './components/AppUpdateForm';
 import AppUpdateForm from './components/AppUpdateForm';
 import {appList, updateApp, addApp, removeApp} from '@/services/ant-design-pro/appApi';
 import { useAccess, Access } from 'umi';
+import placeholder from "lodash/fp/placeholder";
 /**
  * 添加节点
  *
@@ -129,7 +130,6 @@ const AppManager: React.FC = () => {
         />
       ),
       dataIndex: 'appname',
-      tip: '应用英文名',
     },
 
     {
@@ -140,7 +140,6 @@ const AppManager: React.FC = () => {
         />
       ),
       dataIndex: 'title',
-      tip: '应用中文名',
     },
     {
       title: <FormattedMessage id="pages.searchTable.owner" defaultMessage="负责人" />,
@@ -245,7 +244,8 @@ const AppManager: React.FC = () => {
         })}
 
         showHeader={false}
-
+        size={"small"}
+        options={{density:false, reload:false}}
         actionRef={actionRef}
         rowKey="id"
         search={{

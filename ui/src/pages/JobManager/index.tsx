@@ -131,7 +131,7 @@ const JobManager: React.FC = (props) => {
 
 
   const menuEditClick = async(selectedRows: API.Job,type:string)=>{
-      
+
       setCurrentRow(selectedRows);
       setDataCron({'scheduleConf':selectedRows.scheduleConf,'nextTriggerTime':''});
       handleModalVisible(true);
@@ -143,18 +143,18 @@ const JobManager: React.FC = (props) => {
 
       handleRunOnceModalVisible(true);
       setCurrentRow(fields);
-  
+
   };
 
   const menuSearchLogClick = async(selectedRows: API.Job,type:string)=>{
-      
-    
+
+
       console.log(selectedRows,type);
 
   };
 
   const menuSearchRegisterNodeClick = async(selectedRows: API.Job,type:string)=>{
-      
+
       try {
         const group = await registerInfo({id:selectedRows.jobGroup});
         setShowDetail(true);
@@ -169,13 +169,13 @@ const JobManager: React.FC = (props) => {
   };
 
   const menuNextRuntimeClick = async(selectedRows: API.Job,type:string)=>{
-      
+
       try {
         const time = await nextTriggerTime({...selectedRows});
         setShowDetailTime(true);
         time.executorHandler=selectedRows.executorHandler;
         time.jobDesc = selectedRows.jobDesc;
-        
+
         for(var i in time.content){
           time[i] = time.content[i];
         }
@@ -189,7 +189,7 @@ const JobManager: React.FC = (props) => {
   };
 
   const menuRunClick = async(selectedRows: API.Job,type:string)=>{
-      
+
       const hide = message.loading('正在启动');
       try {
         await start({id:selectedRows.id});
@@ -205,7 +205,7 @@ const JobManager: React.FC = (props) => {
 
   };
   const menuStopClick = async(selectedRows: API.Job,type:string)=>{
-      
+
       const hide = message.loading('正在停止');
       try {
         await stop({id:selectedRows.id});
@@ -222,19 +222,19 @@ const JobManager: React.FC = (props) => {
   };
 
   const menuDeleteClick = async(selectedRows: API.Job,type:string)=>{
-      
+
       handleRemove(selectedRows);
   };
 
   const menuCopyClick = async(selectedRows: API.Job,type:string)=>{
-  
+
       var editValues = {};
       for(var i in selectedRows){
         if(i=='id')
           continue;
         editValues[i]=selectedRows[i];
       }
-      
+
       handleModalVisible(true);
       handleIsEdit(false);
       setCurrentRow(editValues);
@@ -243,10 +243,10 @@ const JobManager: React.FC = (props) => {
 
 
   const checkTriggerTime = async(selectedRows: API.Job,type:string)=>{
-      
+
       try {
         const time = await nextTriggerTime({...selectedRows});
-        
+
         var nextTime={};
          nextTime.a= time.content[0];
          nextTime.b=time.content[1];
@@ -267,7 +267,7 @@ const JobManager: React.FC = (props) => {
   const columnsTime=[
 
     {title:'executorHandler',dataIndex:'executorHandler'},
-    
+
     {
       title:'下次执行时间',dataIndex:'0',
     },{
@@ -374,7 +374,7 @@ const JobManager: React.FC = (props) => {
               执行一次
             </Menu.Item>
             <Menu.Item key="searchLog" icon={<SearchOutlined />}>
-              
+
               <Link to={
 
                 "/log?id="+record.id
@@ -423,7 +423,7 @@ const JobManager: React.FC = (props) => {
                           menuDeleteClick(record,"searchLog");
                           actionRef.current?.reloadAndRest?.();
                         }}>
-  
+
                 <Menu.Item key="delete" icon={<DeleteTwoTone />} >
                   删除
                 </Menu.Item>
@@ -433,11 +433,10 @@ const JobManager: React.FC = (props) => {
             </Menu.Item>
           </Menu>
     }>
-          <Button type="primary" itemValue={record} trigger='click'>
+          <Button size={"small"} type="primary" itemValue={record} trigger='click'>
             操作 <DownOutlined />
-          
           </Button>
-        </Dropdown>  
+        </Dropdown>
       ],
     },
   ];
@@ -456,9 +455,11 @@ const JobManager: React.FC = (props) => {
           id: 'pages.searchTable.job.title',
           defaultMessage: '任务列表',
         })}
+
         actionRef={actionRef}
         rowKey="key"
-        
+        size={"small"}
+        options={{density:false, reload:false}}
         search={false}
         toolBarRender={() => [
           <Button
@@ -476,7 +477,7 @@ const JobManager: React.FC = (props) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
           return jobList({...param,...params});
         }}
-        
+
         columns={columns}
       />
       {<ModalForm
@@ -489,7 +490,7 @@ const JobManager: React.FC = (props) => {
             okText: '执行一次',
             destroyOnClose: true,
         }}
-   
+
         onFinish={async (value) => {
 
           const hide = message.loading('正在触发');
@@ -503,7 +504,7 @@ const JobManager: React.FC = (props) => {
             message.error('触发失败请重试！'+error);
             return false;
           }
-          
+
         }}
         width="50%"
       visible={modalRunOnceVisible}
@@ -521,7 +522,7 @@ const JobManager: React.FC = (props) => {
         <ProFormTextArea
           rules={[
             {
-              
+
               message: (
                 <FormattedMessage
                   id="pages.searchTable.taskArgs"
@@ -536,7 +537,7 @@ const JobManager: React.FC = (props) => {
         />
         <ProFormTextArea rules={[
             {
-              
+
               message: (
                 <FormattedMessage
                   id="pages.searchTable.address"
@@ -584,10 +585,10 @@ const JobManager: React.FC = (props) => {
         closable={true}
         title="注册信息"
       >
-      <p>应用名称：{jobGroup.appname}</p>
+      <p>服务名称：{jobGroup.appname}</p>
       <p>地址：{jobGroup.addressList}</p>
       <p>注册地址：{jobGroup.registryList}</p>
-      
+
       </Drawer>
       <Drawer
         width={600}
@@ -613,7 +614,7 @@ const JobManager: React.FC = (props) => {
             columns={columnsTime}
           />
         )}
-      
+
       </Drawer>
     </PageContainer>
   );

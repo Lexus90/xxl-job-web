@@ -33,7 +33,7 @@ export default {
   'pages.searchTable.edit': '编辑',
 
   'pages.searchTable.appId': 'APP_ID',
-  'pages.searchTable.appName': '应用名称',
+  'pages.searchTable.appName': '服务名称',
   'pages.searchTable.owner': '负责人',
   'menu.Dashboard': 'Dashboard',
 
@@ -93,6 +93,6 @@ export default {
   'pages.jobManager.scheduleConf': "调度类型",
   'pages.jobManager.triggerStatus': "状态",
   'pages.jobManager.author': "负责人",
-  
+
 
 };

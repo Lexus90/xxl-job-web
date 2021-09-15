@@ -141,23 +141,6 @@ const UserManager: React.FC = () => {
       },
       render: (dom, entity) => {
         return (
-          // <ProFormSelect.SearchSelect
-          //   name="role"
-          //   // label="角色"
-          //   initialValue={entity.role}
-          //   fieldProps={{
-          //     labelInValue: false,
-          //     style: {
-          //       minWidth: 40,
-          //     },
-          //   }}
-          //   options={[
-          //     { label: '全部', value: -1 },
-          //     { label: '普通用户', value: 0 },
-          //     { label: '管理员', value: 1 },
-          //   ]}
-          // />
-
         <Space>
           {entity.role == 0 ? <Tag color="blue">普通用户</Tag>  : <Tag color="red">管理员</Tag>}
         </Space>
@@ -250,9 +233,9 @@ const UserManager: React.FC = () => {
           id: 'pages.searchTable.user.title',
           defaultMessage: '用户列表',
         })}
-
+        size={"small"}
+        options={{density:false, reload:false}}
         showHeader={false}
-
         actionRef={actionRef}
         rowKey="id"
         search={{
