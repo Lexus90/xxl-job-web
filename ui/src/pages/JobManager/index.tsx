@@ -7,12 +7,20 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import {
+  Link,useParams
+} from "react-router-dom";
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import type { FormValueType } from './components/JobUpdateForm';
+import type { AdvancedSearchProps } from './components/JobUpdateForm';
+import type { FormValueType } from './components/JobSearch';
 import UpdateForm from './components/JobUpdateForm';
+import JobSearch from './components/JobSearch';
 import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
-import { jobList,addJob,update,remove,start,stop,trigger,nextTriggerTime ,registerInfo} from '@/services/ant-design-pro/jobApi';
+import { jobList,addJob,update,remove,start,stop,trigger,nextTriggerTime ,registerInfo} from '@/services/ant-design-pro/jobInfoApi';
+import {getJobsByGroup } from '@/services/ant-design-pro/jobApi';
+
+import {LogManager} from '../Log';
 
 
 
@@ -78,6 +86,9 @@ const handleUpdate = async (fields: FormValueType) => {
  * @param selectedRows
  */
 const handleRemove = async (selectedRows: API.Job[]) => {
+  <Route path={`logtest/:id`}>
+          <LogManager />
+        </Route>
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -98,12 +109,12 @@ const handleRemove = async (selectedRows: API.Job[]) => {
 
 
 
-const JobManager: React.FC = () => {
+const JobManager: React.FC = (props) => {
   /** 新建窗口的弹窗 */
   // const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 分布更新窗口的弹窗 */
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [isEdit, handleIsEdit] = useState<boolean>(false);
+  const [isedit, handleIsEdit] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [showDetailTime, setShowDetailTime] = useState<boolean>(false);
@@ -116,10 +127,13 @@ const JobManager: React.FC = () => {
   const [triggerTime, setTriggerTime] = useState<any>([]);
   const [dataCron, setDataCron] = useState([]);
 
+  const [param, setParam] = useState<API.LogPageParams>();
+
 
   const menuEditClick = async(selectedRows: API.Job,type:string)=>{
       
       setCurrentRow(selectedRows);
+      setDataCron({'scheduleConf':selectedRows.scheduleConf,'nextTriggerTime':''});
       handleModalVisible(true);
       handleIsEdit(true);
 
@@ -134,7 +148,7 @@ const JobManager: React.FC = () => {
 
   const menuSearchLogClick = async(selectedRows: API.Job,type:string)=>{
       
-      
+    
       console.log(selectedRows,type);
 
   };
@@ -228,6 +242,25 @@ const JobManager: React.FC = () => {
   };
 
 
+  const checkTriggerTime = async(selectedRows: API.Job,type:string)=>{
+      
+      try {
+        const time = await nextTriggerTime({...selectedRows});
+        
+        var nextTime={};
+         nextTime.a= time.content[0];
+         nextTime.b=time.content[1];
+         setDataCron({'scheduleConf':selectedRows.scheduleConf,'nextTriggerTime':nextTime});
+        return nextTime;
+
+      } catch (error) {
+        message.error('查询失败请重试！'+error);
+        return {};
+      }
+
+  };
+
+
 
   /** 国际化配置 */
   const intl = useIntl();
@@ -264,6 +297,7 @@ const JobManager: React.FC = () => {
       ),
       dataIndex: 'jobGroup',
       hideInTable:true,
+      hideInSearch: true,
       hideInDescriptions:true,
       render:(_,record) =>(
               (record.jobGroup)+"["+(record.jobDesc)+"]"
@@ -278,6 +312,7 @@ const JobManager: React.FC = () => {
     {
       title: <FormattedMessage id="pages.searchTable.scheduleType" defaultMessage="调度类型" />,
       dataIndex: 'scheduleType',
+      hideInSearch: true,
       render:(_,record) =>(
               (record.scheduleType)+": "+(record.scheduleConf)
 
@@ -287,6 +322,7 @@ const JobManager: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.glueType" defaultMessage="运行模式" />,
       dataIndex: 'glueType',
       hideInForm: true,
+      hideInSearch: true,
       render:(_,record) =>(
               (record.glueType)+": "+(record.executorHandler)
 
@@ -296,6 +332,7 @@ const JobManager: React.FC = () => {
       title: (
         <FormattedMessage id="pages.searchTable.author" defaultMessage="负责人" />
       ),
+      hideInSearch: true,
       dataIndex: 'author',
     },
     {
@@ -304,6 +341,7 @@ const JobManager: React.FC = () => {
       ),
       dataIndex: 'triggerStatus',
       hideInForm: false,
+      hideInSearch: true,
       valueEnum: {
         2: {
           text: (
@@ -335,8 +373,13 @@ const JobManager: React.FC = () => {
             <Menu.Item key="runOnce" icon={<UserOutlined />} onClick={()=>menuRunOnceClick(record,"runOnce")}>
               执行一次
             </Menu.Item>
-            <Menu.Item key="searchLog" icon={<SearchOutlined />} onClick={()=>menuSearchLogClick(record,"searchLog")}>
-              查询日志
+            <Menu.Item key="searchLog" icon={<SearchOutlined />}>
+              
+              <Link to={
+
+                "/log?id="+record.id
+
+              }>查询日志</Link>
             </Menu.Item>
             <Menu.Item key="searchRegisterNode" icon={<SearchOutlined />} onClick={()=>menuSearchRegisterNodeClick(record,"searchLog")}>
               注册节点
@@ -401,6 +444,13 @@ const JobManager: React.FC = () => {
 
   return (
     <PageContainer>
+    <JobSearch onSearch={(allValues)=>{
+                                setParam(allValues);
+                                actionRef.current?.reload();
+                              }}
+                 initParam={(allValues)=>{
+                                  setParam(allValues);
+                                }} />
       <ProTable<API.Job, API.JobPageParams>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.job.title',
@@ -408,9 +458,8 @@ const JobManager: React.FC = () => {
         })}
         actionRef={actionRef}
         rowKey="key"
-        search={{
-          labelWidth: 120,
-        }}
+        
+        search={false}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -423,7 +472,11 @@ const JobManager: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
           </Button>,
         ]}
-        request={jobList}
+        request={(params, sorter, filter) => {
+          // 表单搜索项会从 params 传入，传递给后端接口。
+          return jobList({...param,...params});
+        }}
+        
         columns={columns}
       />
       {<ModalForm
@@ -514,9 +567,9 @@ const JobManager: React.FC = () => {
         }}
         modalVisible={modalVisible}
         values={currentRow || {}}
-        isEdit={isEdit}
+        isedit={isedit}
         onChange={(e)=>{
-          setDataCron(e);
+          checkTriggerTime({'scheduleType':'CRON','scheduleConf':e});
         }}
         dataCron={dataCron}
       />

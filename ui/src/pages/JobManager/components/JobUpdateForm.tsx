@@ -1,10 +1,10 @@
-import React ,{useState}from 'react';
+import React ,{useState,formRef,useRef}from 'react';
 import { Modal,Card ,Col, Popover, Row, message,Tooltip ,Input,Dropdown,Form} from 'antd';
 import ProForm, {
   ModalForm,
   ProFormDateRangePicker, ProFormRadio, ProFormSelect, ProFormText, ProFormTextArea,
 } from '@ant-design/pro-form';
-import { useIntl, FormattedMessage } from 'umi';
+import { useIntl, FormattedMessage ,useAccess, Access} from 'umi';
 import styles from './style.less';
 import Cron from '../../Cron';
 import { InfoCircleOutlined, UserOutlined,DeleteTwoTone } from '@ant-design/icons';
@@ -22,7 +22,7 @@ export type UpdateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   modalVisible: boolean;
   handleModalVisible: boolean;
-  isEdit: boolean;
+  isedit: boolean;
   values: Partial<API.AppInfo>;
 };
 
@@ -30,9 +30,18 @@ const JobUpdateForm: React.FC<UpdateFormProps> = (props) => {
   
 const value ={};
 
+
+const access = useAccess();
+
+
+  const openList = [];
+  access.accessApps?.forEach(function (e) {
+    openList.push({label: e.appname + "[" + e.title + "]", value: e.id})
+  })
+
   const intl = useIntl();
   const [data, typeCronFuntion] = useState({'request':true,'corn':true});
-  const [dataCron, setDataCron] = useState([]);
+  // const [dataCron, setDataCron] = useState([]);
   
 
   const typeCron =(e)=>{
@@ -50,9 +59,12 @@ const value ={};
   };
 
   const onChange =(e)=>{
-console.log(e);
+      const formRef = useRef<ProFormInstance>();
+       formRef?.current?.setFieldsValue({
+        scheduleConf: e,
+    });
+   };
 
-};
   return (
     <ModalForm<{
       id?: number;
@@ -72,10 +84,10 @@ console.log(e);
       visible={props.modalVisible}
       onVisibleChange={props.handleModalVisible}
       onFinish={props.onSubmit}
-      isEdit={props.isEdit}
+      isedit={props.isedit}
       modalProps={{
         onCancel: ()=>{
-          typeCronFuntion(true,data.corn),
+          typeCronFuntion({'request':true,'corn':true}),
           props.onCancel()},
         destroyOnClose: true,
       }}
@@ -90,20 +102,21 @@ console.log(e);
       <Card title="基础配置" className={styles.card} bordered={false}>
           <Row gutter={16}>
              <Col lg={12} md={24} sm={48}>
-                <ProFormText
-                  rules={[
-                      {
-                        required: true,
-                        message: (
-                          <FormattedMessage
-                            id="pages.searchTable.jobGroup"
-                            defaultMessage="请输入服务名称"
-                          />
-                        ),
-                      },
-                    ]}
-                    initialValue={props.values.jobGroup}
-                    width="lg" name="jobGroup" placeholder="请输入服务名称" label="服务名称"/>
+
+
+              <ProFormSelect width={"sm"} placeholder={"请选择APP_ID"} name="jobGroup" label="服务" showSearch
+                     options={openList}
+                    rules={[
+                          {
+                            required: true
+                          }
+                        
+                        ]}
+
+                     fieldProps={{
+                      
+                     }}/>
+              
              </Col>
              <Col lg={12} md={24} sm={48}>
                 <ProFormText
@@ -207,20 +220,20 @@ console.log(e);
                       },
                     ]}
                     initialValue={props.values.scheduleConf}
-                    width="lg" name="scheduleConf" placeholder="Cron/固定速度数据" label="Corn/固定速度"/>)}
+                    width="lg" name="scheduleConf2" placeholder="Cron/固定速度数据" label="Corn/固定速度"/>)}
 
                 {data.corn&&(<Dropdown trigger='click'
                     placement="bottomLeft"
-                    overlay={<Cron value={value} onOk={props.onChange}/>}
+                    overlay={<Cron value={props.dataCron.scheduleConf} triggerTime={props.dataCron.nextTriggerTime} onOk={props.onChange}/>}
                     >
                   
                     <Form.Item shouldUpdate>
-                      {(form) => {
-                        return (
+                      {
+                         (
                           <ProFormText
                           rules={[
                               {
-                                required: data.request,
+                                // required: data.request,
                                 message: (
                                   <FormattedMessage
                                     id="pages.searchTable.scheduleConf"
@@ -229,12 +242,13 @@ console.log(e);
                                 ),
                               },
                             ]}
-                            value={props.dataCron}
+                            value={props.dataCron.scheduleConf}
                             width="lg"
                             name="scheduleConf" placeholder="Cron表达式" label="Corn/固定速度"
                           />
-                        );
-                      }}
+                        )
+                        
+                      }
                     </Form.Item>
 
                 </Dropdown>)}
@@ -269,7 +283,7 @@ console.log(e);
                         value: 'CRON',
                       },
                     ]}
-                    disabled={props.isEdit}
+                    disabled={props.isedit}
                     initialValue={!props.values.glueType?'BEAN':props.values.glueType}
                     width="lg" name="glueType" placeholder="运行模式" label="运行模式"/>
              </Col>

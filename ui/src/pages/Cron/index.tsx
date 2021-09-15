@@ -14,7 +14,7 @@ const { TabPane } = Tabs;
 const tabPaneStyle = { paddingLeft: 10, paddingBottom: 8, marginTop: -10 };
 const getTabTitle = (text) => <div style={{ width: 50, textAlign: 'center' }}>{text}</div>;
 const Cron: React.FC = (props) => {
-    const { style, footerStyle, footerRenderer, value, onOk } = props;
+    const { style, footerStyle, footerRenderer, value ,triggerTime,onOk} = props;
     const [currentTab, setCurrentTab] = useState('1');
     const [second, setSecond] = useState('*');
     const [minute, setMinute] = useState('*');
@@ -98,10 +98,12 @@ const Cron: React.FC = (props) => {
             <React.Fragment>
                     <Row gutter={16}>
                      <Col lg={12} md={24} sm={48}>
-                        <ProFormText value="* * 8 ?*"/>
+                        {value}
                      </Col>
                      <Col lg={12} md={24} sm={48}>
-                        <ProFormText value="8s"/>  
+                        {!triggerTime? "":triggerTime.a}<br/>
+                        {!triggerTime? "":triggerTime.b}
+
                      </Col>
                   </Row>
                 <Button style={{ marginRight: 10 }} onClick={onReset}>
